@@ -74,6 +74,7 @@
     <a href="#size" class="block py-2">Find My Size</a>
     <a href="#box" class="block py-2">What You Get</a>
     <a href="#boutique" class="block py-2">Mobile Boutique</a>
+    <a href="#contact" class="block py-2">Contact</a>
     <div class="flex gap-5 border-t border-edge pt-3 mt-2 normal-case tracking-normal">
       <a href="https://www.instagram.com/nexoscrubsofficial/" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.facebook.com/people/NEXO-Scrubs/61595868156428/" target="_blank" rel="noopener">Facebook</a>
@@ -111,7 +112,7 @@
           </select>
           <select required name="color" class="field">
             <option value="">Colour</option>
-            <option>Heather Steel-Blue</option><option>Tactical Olive</option><option>Deep Maroon</option><option>Midnight Navy</option><option>Matte Black</option>
+            <option>Midnight Navy</option><option>Matte Black</option>
           </select>
           <select required name="top_size" class="field">
             <option value="">Top size</option><option>S</option><option>M</option><option>L</option><option>XL</option>
@@ -120,7 +121,10 @@
             <option value="">Jogger size</option><option>S</option><option>M</option><option>L</option><option>XL</option>
           </select>
         </div>
+        <p class="mt-2 text-xs text-silver/60">Drop 01 launches in Midnight Navy and Matte Black. More colours are coming soon.</p>
+        <input name="color_wish" list="nextColors" maxlength="60" placeholder="Colour you'd like to see next (optional: pick or type)" class="field mt-3">
         <input type="tel" name="phone" placeholder="Mobile for SMS drop alerts (optional)" autocomplete="tel" class="field mt-3">
+        <label class="mt-3 flex items-start gap-2 text-xs text-silver/75"><input type="checkbox" name="womens" value="Yes" class="mt-0.5 accent-white"> I'd also like a NEXO women's line. Keep me posted.</label>
         <input type="hidden" name="form" value="Drop 01 pre-order">
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
         <button class="mt-3 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Reserve My Set</button>
@@ -130,6 +134,17 @@
     </div>
     <figure class="lg:sticky lg:top-24">
       <img src="assets/banner-launch.jpg" alt="NEXO Technical Medical Apparel by Coll: 01/50 launch pre-order now open" class="w-full rounded-md border border-edge" width="1376" height="768">
+      <form id="womens" data-form="womens" method="POST" class="mt-5 rounded-md border border-edge bg-panel/90 p-4 sm:p-5">
+        <p class="text-xs font-semibold uppercase tracking-[.2em] text-white">Want a NEXO women's drop?</p>
+        <p class="mt-1 text-sm text-silver/70">Drop 01 is made for men. Join the women's list, with no order needed, and help us decide how soon it happens.</p>
+        <div class="mt-3 flex flex-col gap-3 sm:flex-row">
+          <input required type="email" name="email" placeholder="Email address" autocomplete="email" class="field">
+          <button class="shrink-0 rounded-sm border border-silver px-5 py-3 text-xs font-bold uppercase tracking-[.2em] text-white hover:bg-white hover:text-ink">Count me in</button>
+        </div>
+        <input type="hidden" name="form" value="Women's drop">
+        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+        <p class="form-msg mt-2 hidden text-sm"></p>
+      </form>
     </figure>
   </div>
 </section>
@@ -143,9 +158,34 @@
     <div id="cards" class="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-4"></div>
 
     <figure class="mt-14">
-      <img src="assets/colorways.jpg" alt="NEXO sets in Deep Maroon, Midnight Navy, Tactical Olive, Heather Steel-Blue and Matte Black" loading="lazy" class="w-full rounded-md border border-edge">
+      <div class="relative">
+        <img src="assets/colorways.jpg" alt="NEXO sets in Deep Maroon, Midnight Navy, Tactical Olive, Heather Steel-Blue and Matte Black" loading="lazy" class="w-full rounded-md border border-edge">
+        <span class="absolute right-3 top-3 rounded-sm bg-ink/85 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.25em] text-white sm:text-xs">More colours coming soon</span>
+      </div>
       <figcaption class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs uppercase tracking-widest text-silver/70" id="colorList"></figcaption>
     </figure>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-2">
+      <form id="vote" data-form="vote" method="POST" class="rounded-md border border-edge bg-panel p-5">
+        <p class="text-xs font-semibold uppercase tracking-[.2em] text-white">Pick the next colour</p>
+        <p class="mt-2 text-sm text-silver/70">Drop 01 pre-orders are Midnight Navy and Matte Black. Tell us which colour you want next, even if you're not pre-ordering yet. The most-picked colour gets made first.</p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          <input required name="color_wish" list="nextColors" maxlength="60" placeholder="Pick or type a colour" class="field">
+          <input required type="email" name="email" placeholder="Email (we tell you when it drops)" autocomplete="email" class="field">
+        </div>
+        <label class="mt-3 flex items-start gap-2 text-xs text-silver/75"><input type="checkbox" name="womens" value="Yes" class="mt-0.5 accent-white"> I'd also like a NEXO women's line.</label>
+        <input type="hidden" name="form" value="Colour vote">
+        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+        <button class="mt-3 w-full rounded-sm border border-silver py-2.5 text-xs font-bold uppercase tracking-[.2em] text-white hover:bg-white hover:text-ink">Send my pick</button>
+        <p class="form-msg mt-2 hidden text-sm"></p>
+      </form>
+      <div class="rounded-md border border-edge p-5">
+        <p class="text-xs font-semibold uppercase tracking-[.2em] text-white">Women's line: on the way if you want it</p>
+        <p class="mt-2 text-sm text-silver/70">Drop 01 is built for men, from the cut to the US men's size chart. If the launch goes well, a NEXO women's fit comes next, with the same fabric, zip pockets and N/X details, cut for a woman's frame rather than just made smaller.</p>
+        <p class="mt-3 text-sm text-silver/70">Want it? <a href="#womens" class="underline underline-offset-2 hover:text-white">Join the women's list</a> (no order needed) or tick "women's line" on either form. Every sign-up helps decide how soon it happens. You can also tell us on <a href="https://www.instagram.com/nexoscrubsofficial/" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-white">Instagram</a> or <a href="https://www.tiktok.com/@nexoscrubsofficial" target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-white">TikTok</a>.</p>
+      </div>
+    </div>
+    <datalist id="nextColors"><option value="Deep Maroon"><option value="Tactical Olive"><option value="Heather Steel-Blue"></datalist>
   </div>
 </section>
 
@@ -236,8 +276,12 @@
 </section>
 
 <!-- MOBILE BOUTIQUE -->
-<section id="boutique" class="border-b border-edge">
-  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2">
+<section id="boutique" class="relative border-b border-edge">
+  <!-- Not running yet: shown greyed out and unclickable until the trailer is on the road -->
+  <div class="absolute inset-x-0 top-6 z-10 flex justify-center px-4">
+    <p class="rounded-sm border border-silver/60 bg-ink/90 px-4 py-2 text-center text-xs font-semibold uppercase tracking-[.25em] text-white sm:text-sm">Coming soon to the street where you work</p>
+  </div>
+  <div class="mx-auto grid max-w-7xl select-none gap-10 px-4 pb-20 pt-28 opacity-40 grayscale sm:px-6 lg:grid-cols-2" aria-disabled="true">
     <div>
       <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">Pop-up Retail</p>
       <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">The NEXO Mobile Boutique</h2>
@@ -248,7 +292,8 @@
         <div class="rounded-md border border-edge bg-panel p-4"><p class="font-tac text-2xl font-bold text-white">Events</p><p class="text-[11px] uppercase tracking-widest">Nurses Week &amp; schools</p></div>
       </div>
     </div>
-    <form data-form="boutique" method="POST" class="rounded-md border border-edge bg-panel p-6">
+    <form data-form="boutique" method="POST" class="pointer-events-none rounded-md border border-edge bg-panel p-6" inert>
+      <fieldset disabled>
       <p class="font-tac text-2xl font-bold uppercase tracking-wide text-white">Request a Hospital Pop-Up Stop</p>
       <div class="mt-5 grid gap-3 sm:grid-cols-2">
         <input required name="name" placeholder="Name" autocomplete="name" class="field">
@@ -261,7 +306,41 @@
       </div>
       <input type="hidden" name="form" value="Mobile Boutique request">
       <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
-      <button class="mt-4 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Request a Stop</button>
+      <button class="mt-4 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink">Coming Soon</button>
+      <p class="form-msg mt-2 hidden text-sm"></p>
+      </fieldset>
+    </form>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="border-b border-edge">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">Questions?</p>
+      <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">Contact NEXO</h2>
+      <p class="mt-4 text-silver/75">Sizing, fabric, group orders for your unit, or anything else. Send a message and we'll reply by email, or reach us directly.</p>
+      <div class="mt-8 space-y-4">
+        <a href="mailto:nexoscrubsofficial@gmail.com" class="flex items-center gap-3 hover:text-white">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          nexoscrubsofficial@gmail.com
+        </a>
+        <a href="tel:+14143232165" class="flex items-center gap-3 hover:text-white">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+          (414) 323-2165
+        </a>
+      </div>
+    </div>
+    <form data-form="contact" method="POST" class="rounded-md border border-edge bg-panel p-6">
+      <p class="font-tac text-2xl font-bold uppercase tracking-wide text-white">Send us a message</p>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2">
+        <input required name="name" placeholder="Name" autocomplete="name" class="field">
+        <input required type="email" name="email" placeholder="Email" autocomplete="email" class="field">
+        <textarea required name="message" rows="4" maxlength="1500" placeholder="Your message" class="field sm:col-span-2"></textarea>
+      </div>
+      <input type="hidden" name="form" value="Contact message">
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+      <button class="mt-4 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Send Message</button>
       <p class="form-msg mt-2 hidden text-sm"></p>
     </form>
   </div>
@@ -288,14 +367,17 @@
       </a>
     </div>
   </div>
-  <p class="mt-6 text-xs text-silver/50">© <span id="yr"></span> NEXO by Coll — Technical Medical Apparel · nexoscrubs.com</p>
+  <p class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm"><a href="mailto:nexoscrubsofficial@gmail.com" class="hover:text-white">nexoscrubsofficial@gmail.com</a><a href="tel:+14143232165" class="hover:text-white">(414) 323-2165</a></p>
+  <p class="mt-4 text-xs text-silver/50">© <span id="yr"></span> NEXO by Coll — Technical Medical Apparel · nexoscrubs.com</p>
 </footer>
 
 <script>
+// The first two are the Drop 01 pre-order colours; the rest are coming soon.
 const COLORS = [
-  ['Heather Steel-Blue', '#6f8296'], ['Tactical Olive', '#4f5d36'], ['Deep Maroon', '#5e1f2b'],
-  ['Midnight Navy', '#1c2738'], ['Matte Black', '#151515']
+  ['Midnight Navy', '#1c2738'], ['Matte Black', '#151515'],
+  ['Deep Maroon', '#5e1f2b'], ['Tactical Olive', '#4f5d36'], ['Heather Steel-Blue', '#6f8296']
 ];
+const NOW = COLORS.slice(0, 2), SOON = COLORS.slice(2);
 // One picture per design, never reused. The Hybrid is a future drop.
 const STYLES = [
   { name: 'Short-Sleeve Athletic Set', img: 'assets/set-short-sleeve.jpg', shown: 'Midnight Navy', fit: 'contain',
@@ -335,8 +417,8 @@ STYLES.forEach((s, i) => {
     </div>
     <div class="flex flex-1 flex-col p-5">
       <h3 class="font-tac text-xl font-bold uppercase tracking-wide text-white">${s.name}</h3>
-      <p class="mt-1 text-xs uppercase tracking-widest text-steel">${s.future ? s.code + ' · future drop' : 'Shown in ' + s.shown}</p>
-      ${s.future ? '' : `<div class="mt-3 flex gap-2" aria-label="Available colours">${COLORS.map(([n, h]) => `<span class="dot" style="background:${h}" title="${n}"></span>`).join('')}</div>`}
+      <p class="mt-1 text-xs uppercase tracking-widest text-steel">${s.future ? s.code + ' · future drop' : 'Shown in ' + s.shown + (NOW.some(([n]) => n === s.shown) ? '' : ' (coming soon)')}</p>
+      ${s.future ? '' : `<div class="mt-3 flex items-center gap-2 text-[11px] uppercase tracking-widest text-silver/70" aria-label="Pre-order colours">${NOW.map(([n, h]) => `<span class="dot" style="background:${h}" title="${n}"></span>`).join('')}<span class="ml-1">Navy or Black</span><span class="text-silver/40">· more soon</span></div>`}
       <p class="mt-4 text-sm text-silver/75"><span class="font-semibold text-white">Top · </span>${s.top}</p>
       <p class="mt-2 text-sm text-silver/75"><span class="font-semibold text-white">Jogger · </span>${s.pant}</p>
       <div class="mt-auto pt-5">
@@ -350,7 +432,9 @@ STYLES.forEach((s, i) => {
 document.querySelectorAll('.pick').forEach(a => a.addEventListener('click', () => {
   document.querySelector('#preorder [name=style]').value = a.dataset.style;
 }));
-document.getElementById('colorList').innerHTML = COLORS.map(([n, h]) => `<span class="inline-flex items-center gap-2"><span class="dot" style="background:${h}"></span>${n}</span>`).join('');
+const swatch = ([n, h]) => `<span class="inline-flex items-center gap-2"><span class="dot" style="background:${h}"></span>${n}</span>`;
+document.getElementById('colorList').innerHTML =
+  `<span class="text-white">Pre-order now:</span>${NOW.map(swatch).join('')}<span class="mx-1 text-silver/30">|</span><span class="text-white">Coming soon:</span><span class="contents opacity-60">${SOON.map(swatch).join('')}</span>`;
 
 document.getElementById('sizeRows').innerHTML = CHART.map(r =>
   `<tr class="border-t border-edge"><td class="px-3 py-3 font-tac text-lg font-bold text-white">${r.size}</td><td>${r.chest[0]}–${r.chest[1]}"</td><td>${r.waist}"</td><td>${r.inseam}"</td><td>${r.length}"</td><td>${r.sleeve.toFixed(1)}"</td></tr>`).join('');
@@ -445,9 +529,12 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
     await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) });
     form.reset();
     msg.className = 'form-msg mt-2 text-sm text-emerald-300';
-    msg.textContent = form.dataset.form === 'preorder'
-      ? 'You\'re in. We\'ll email you to confirm your Drop 01 set.'
-      : 'Request received. We\'ll be in touch about a pop-up stop.';
+    msg.textContent = {
+      preorder: 'You\'re in. We\'ll email you to confirm your Drop 01 set.',
+      vote: 'Got it, thanks! We\'ll email you when your colour drops.',
+      womens: 'You\'re on the women\'s list. We\'ll email you first.',
+      contact: 'Message sent. We\'ll reply by email soon.',
+    }[form.dataset.form] || 'Request received. We\'ll be in touch about a pop-up stop.';
   } catch {
     msg.className = 'form-msg mt-2 text-sm text-red-300';
     msg.textContent = 'Something went wrong. Please check your connection and try again.';
