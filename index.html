@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXO — Technical Medical Apparel by Coll</title>
+<meta name="description" content="NEXO technical scrubs for men, engineered for the 12-hour shift. 01/50 Launch Edition pre-orders: the first 50 get the numbered N/X patch and badge reel.">
+<meta property="og:title" content="NEXO — Engineered for the 12-Hour Shift">
+<meta property="og:description" content="01/50 Launch Edition technical scrubs and the NEXO Mobile Boutique, launching soon.">
+<meta property="og:image" content="https://nexoscrubs.com/assets/banner-launch.jpg">
+<meta property="og:url" content="https://nexoscrubs.com/">
+<meta name="theme-color" content="#0a0b0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a0b0d' stroke='%23c9ced6' stroke-width='4'/%3E%3Ctext x='32' y='41' font-family='Arial' font-weight='700' font-size='22' fill='%23e6e9ee' text-anchor='middle'%3EN/X%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], tac: ['Rajdhani', 'Inter', 'sans-serif'] },
+      colors: { ink: '#0a0b0d', panel: '#121418', edge: '#23272e', silver: '#c9ced6', steel: '#8aa0b6' }
+    } }
+  }
+</script>
+<style>
+  body { background: #0a0b0d; }
+  .grain { background-image: radial-gradient(rgba(255,255,255,.035) 1px, transparent 1px); background-size: 3px 3px; }
+  .silver-text { background: linear-gradient(180deg,#f2f4f7 0%,#aab1bb 55%,#e6e9ee 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .badge-nx { width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 2px solid #c9ced6; display: grid; place-items: center; font: 700 .8rem/1 Rajdhani, sans-serif; color: #e6e9ee; box-shadow: inset 0 0 0 3px #0a0b0d, inset 0 0 0 4px #4b525c; flex-shrink: 0; }
+  .field { width: 100%; border-radius: 2px; border: 1px solid #23272e; background: #0a0b0d; padding: .75rem; color: #fff; }
+  .field::placeholder { color: rgba(201,206,214,.4); }
+  .field:focus { outline: none; border-color: #c9ced6; }
+  input, select { color-scheme: dark; }
+  .dot { width: .9rem; height: .9rem; border-radius: 9999px; outline: 1px solid #3a3f47; display: inline-block; }
+</style>
+</head>
+<body class="font-sans text-silver antialiased">
+
+<!-- NAVBAR -->
+<header class="sticky top-0 z-40 border-b border-edge bg-ink/90 backdrop-blur">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+    <a href="#top" class="flex items-center gap-3">
+      <span class="badge-nx">N/X</span>
+      <span class="font-tac text-2xl font-bold tracking-[.25em] text-white">NEXO</span>
+    </a>
+    <div class="hidden items-center gap-7 whitespace-nowrap text-sm font-medium uppercase tracking-widest xl:flex">
+      <a href="#collection" class="hover:text-white">Collection</a>
+      <a href="#specs" class="hover:text-white">Tech Specs</a>
+      <a href="#size" class="hover:text-white">Find My Size</a>
+      <a href="#box" class="hover:text-white">What You Get</a>
+      <a href="#boutique" class="hover:text-white">Mobile Boutique</a>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="#join" class="whitespace-nowrap rounded-sm bg-white px-4 py-2 text-xs font-bold uppercase tracking-widest text-ink hover:bg-silver">Join Drop 01</a>
+      <button id="menuBtn" class="p-2 xl:hidden" aria-label="Menu" aria-expanded="false">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h16M3 11h16M3 16h16"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div id="menu" class="hidden border-t border-edge px-4 pb-4 text-sm uppercase tracking-widest xl:hidden">
+    <a href="#collection" class="block py-2">Collection</a>
+    <a href="#specs" class="block py-2">Tech Specs</a>
+    <a href="#size" class="block py-2">Find My Size</a>
+    <a href="#box" class="block py-2">What You Get</a>
+    <a href="#boutique" class="block py-2">Mobile Boutique</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO + PRE-ORDER -->
+<section id="join" class="grain relative overflow-hidden border-b border-edge">
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_30%,rgba(138,160,182,.18),transparent_60%)]"></div>
+  <div class="relative mx-auto grid max-w-7xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:py-20">
+    <div>
+      <span class="inline-flex items-center gap-2 rounded-full border border-silver/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-[.2em] text-white">
+        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-white"></span> 01/50 Launch Pre-Order Now Open
+      </span>
+      <h1 class="mt-6 font-tac text-5xl font-bold uppercase leading-[.95] tracking-wide sm:text-6xl lg:text-7xl">
+        <span class="silver-text">Engineered for the 12-Hour Shift.</span>
+      </h1>
+      <p class="mt-5 max-w-xl text-lg text-silver/80">01/50 Launch Edition technical scrubs &amp; Mobile Boutique experience, launching soon. Tailored athletic scrubs for men: 4-way stretch, fluid-resistant, with a tactical zippered pocket system.</p>
+      <p class="mt-3 max-w-xl text-sm text-white"><span class="font-semibold">First 50 pre-orders</span> get the numbered <span class="font-semibold">01/50 N/X patch</span> and the <span class="font-semibold">N/X badge reel</span>.</p>
+
+      <form id="preorder" data-form="preorder" method="POST" class="mt-7 rounded-md border border-edge bg-panel/90 p-4 sm:p-5">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-[.2em] text-white">Reserve your Drop 01 set</p>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <input required type="email" name="email" placeholder="Email address" autocomplete="email" class="field">
+          <input required name="hospital" placeholder="Hospital / clinic name" class="field">
+          <select required name="style" class="field">
+            <option value="">Style</option>
+            <option>Short-Sleeve Athletic Set</option>
+            <option>Active Tucked-In Set</option>
+            <option>Active Long-Sleeve Set</option>
+          </select>
+          <select required name="color" class="field">
+            <option value="">Colour</option>
+            <option>Heather Steel-Blue</option><option>Tactical Olive</option><option>Deep Maroon</option><option>Midnight Navy</option><option>Matte Black</option>
+          </select>
+          <select required name="top_size" class="field">
+            <option value="">Top size</option><option>S</option><option>M</option><option>L</option><option>XL</option>
+          </select>
+          <select required name="jogger_size" class="field">
+            <option value="">Jogger size</option><option>S</option><option>M</option><option>L</option><option>XL</option>
+          </select>
+        </div>
+        <input type="tel" name="phone" placeholder="Mobile for SMS drop alerts (optional)" autocomplete="tel" class="field mt-3">
+        <input type="hidden" name="form" value="Drop 01 pre-order">
+        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+        <button class="mt-3 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Reserve My Set</button>
+        <p class="mt-2 text-xs text-silver/60">No payment today. We email you to confirm your set before anything is charged. Not sure of your size? <a href="#size" class="underline underline-offset-2 hover:text-white">Find my size</a>.</p>
+        <p class="form-msg mt-2 hidden text-sm"></p>
+      </form>
+    </div>
+    <figure class="lg:sticky lg:top-24">
+      <img src="assets/banner-launch.jpg" alt="NEXO Technical Medical Apparel by Coll: 01/50 launch pre-order now open" class="w-full rounded-md border border-edge" width="1376" height="768">
+    </figure>
+  </div>
+</section>
+
+<!-- COLLECTION -->
+<section id="collection" class="border-b border-edge">
+  <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+    <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">Drop 01 · Men's</p>
+    <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">The Collection</h2>
+    <p class="mt-3 max-w-2xl text-silver/75">Three sets launch in Drop 01, each its own design. Every one has ergonomic paneling, flatlock athletic stitching (10–12 SPI) and the 1.75" 3D silicone N/X patch on the sleeve.</p>
+    <div id="cards" class="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-4"></div>
+
+    <figure class="mt-14">
+      <img src="assets/colorways.jpg" alt="NEXO sets in Deep Maroon, Midnight Navy, Tactical Olive, Heather Steel-Blue and Matte Black" loading="lazy" class="w-full rounded-md border border-edge">
+      <figcaption class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs uppercase tracking-widest text-silver/70" id="colorList"></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- TECH SPECS -->
+<section id="specs" class="grain border-b border-edge">
+  <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+    <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">Tech Specs</p>
+    <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">Anatomy of NEXO</h2>
+    <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_1.4fr]">
+      <img src="assets/details-zip-patch.jpg" alt="Close-up of the matte black YKK zip with N/X silicone pull and the N/X patch" loading="lazy" class="h-full w-full rounded-md border border-edge object-cover">
+      <div class="grid gap-px overflow-hidden rounded-md border border-edge bg-edge sm:grid-cols-2">
+        <div class="bg-panel p-6"><p class="font-tac text-3xl font-bold text-white">230 GSM</p><p class="mt-1 text-sm font-semibold uppercase tracking-widest">4-Way Performance Stretch</p><p class="mt-3 text-sm text-silver/70">72% polyester / 21% rayon / 7% spandex. Moves with you through every lift, squat and sprint down the hall.</p></div>
+        <div class="bg-panel p-6"><p class="font-tac text-3xl font-bold text-white">Fluid-Resistant</p><p class="mt-1 text-sm font-semibold uppercase tracking-widest">Anti-Wrinkle · Breathable</p><p class="mt-3 text-sm text-silver/70">Spills bead up and roll off. Laser-cut underarm ventilation eyelets keep air moving.</p></div>
+        <div class="bg-panel p-6"><p class="font-tac text-3xl font-bold text-white">YKK</p><p class="mt-1 text-sm font-semibold uppercase tracking-widest">Tactical Zippered Pockets</p><p class="mt-3 text-sm text-silver/70">Matte black reverse-coil zips with custom N/X silicone pulls on the chest and thigh cargo pockets.</p></div>
+        <div class="bg-panel p-6"><p class="font-tac text-3xl font-bold text-white">1.75"</p><p class="mt-1 text-sm font-semibold uppercase tracking-widest">Custom Silicone N/X Patch</p><p class="mt-3 text-sm text-silver/70">Raised 3D matte silicone sleeve emblem with metallic silver lettering.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIND MY SIZE -->
+<section id="size" class="border-b border-edge">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">US Men's Sizing</p>
+      <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">Find My Size</h2>
+      <p class="mt-3 text-silver/75">Measure your body with a soft tape, in inches. Your top size comes from your chest and your jogger size from your waist, straight from the NEXO size chart, so you can wear a different top and jogger size.</p>
+      <ol class="mt-6 space-y-3 text-sm text-silver/80">
+        <li><span class="font-semibold text-white">Chest:</span> around the fullest part, under your arms, tape level across your back. Breathe normally.</li>
+        <li><span class="font-semibold text-white">Waist:</span> around where you wear your scrub pants, tape snug but not tight.</li>
+        <li><span class="font-semibold text-white">Inseam (optional):</span> from your crotch down the inside of your leg to your ankle bone.</li>
+      </ol>
+
+      <div class="mt-8 overflow-x-auto rounded-md border border-edge">
+        <table class="w-full min-w-[460px] text-left text-sm">
+          <caption class="sr-only">NEXO US men's size chart in inches</caption>
+          <thead class="bg-panel text-[11px] uppercase tracking-widest text-silver/60"><tr><th class="px-3 py-2">Size</th><th>Chest</th><th>Waist (relaxed)</th><th>Inseam</th><th>Top length</th><th>Sleeve</th></tr></thead>
+          <tbody id="sizeRows"></tbody>
+        </table>
+      </div>
+      <p class="mt-2 text-xs text-silver/50">All measurements in inches.</p>
+    </div>
+
+    <form id="finder" class="self-start rounded-md border border-edge bg-panel p-6" novalidate>
+      <p class="font-tac text-2xl font-bold uppercase tracking-wide text-white">Your measurements</p>
+      <div class="mt-5 grid gap-4 sm:grid-cols-3">
+        <label class="text-xs uppercase tracking-widest">Chest (in)<input name="chest" type="number" inputmode="decimal" step="0.25" min="20" max="70" placeholder="e.g. 40" class="field mt-1 text-base"></label>
+        <label class="text-xs uppercase tracking-widest">Waist (in)<input name="waist" type="number" inputmode="decimal" step="0.25" min="20" max="60" placeholder="e.g. 32" class="field mt-1 text-base"></label>
+        <label class="text-xs uppercase tracking-widest">Inseam (in)<input name="inseam" type="number" inputmode="decimal" step="0.25" min="20" max="40" placeholder="optional" class="field mt-1 text-base"></label>
+      </div>
+      <button class="mt-4 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Find My Size</button>
+      <div id="sizeResult" class="mt-5 hidden" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section id="box" class="grain border-b border-edge">
+  <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+    <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">01/50 Launch Edition</p>
+    <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">What You'll Receive</h2>
+    <div class="mt-10 grid items-center gap-10 lg:grid-cols-2">
+      <img src="assets/packaging.jpg" alt="NEXO frosted garment bag, N/X badge reel and matte black hang tag" loading="lazy" class="w-full rounded-md border border-edge">
+      <div>
+        <p class="font-semibold uppercase tracking-widest text-white">With every Drop 01 set</p>
+        <ul class="mt-4 space-y-4">
+          <li class="border-l-2 border-silver pl-4"><p class="font-semibold text-white">Frosted NEXO garment bag</p><p class="mt-1 text-sm text-silver/70">6 mil matte frosted zip-slider bag with an air-release vent, bold NEXO print and a size bar.</p></li>
+          <li class="border-l-2 border-edge pl-4"><p class="font-semibold text-white">600gsm hang tag</p><p class="mt-1 text-sm text-silver/70">Matte black card on a nylon cord and locker clip: 4-Way Performance Stretch · Fluid-Resistant &amp; Anti-Wrinkle · Tactical Utility Pocket System.</p></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14 rounded-md border border-silver/30 bg-panel p-6 sm:p-8">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">Only the first 50 pre-orders</p>
+          <h3 class="mt-1 font-tac text-3xl font-bold uppercase tracking-wide text-white">The Founders' Kit</h3>
+        </div>
+        <a href="#join" class="self-start rounded-sm bg-white px-5 py-3 text-xs font-bold uppercase tracking-[.2em] text-ink hover:bg-silver sm:self-auto">Claim a spot</a>
+      </div>
+      <p class="mt-3 max-w-3xl text-sm text-silver/75">The first 50 pre-orders get their set in the rigid matte black 01/50 collector box, with two extras made only for them.</p>
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <figure><img src="assets/patch-0150.jpg" alt="Numbered 01/50 N/X silicone patch" loading="lazy" class="aspect-video w-full rounded-md border border-edge object-cover"><figcaption class="mt-2"><span class="font-semibold text-white">01/50 N/X patch</span> <span class="text-sm text-silver/70">· numbered Launch Edition silicone patch</span></figcaption></figure>
+        <figure><img src="assets/badge-reel.jpg" alt="N/X retractable badge reel, front and back" loading="lazy" class="aspect-video w-full rounded-md border border-edge object-cover"><figcaption class="mt-2"><span class="font-semibold text-white">N/X badge reel</span> <span class="text-sm text-silver/70">· retractable ID badge holder with belt clip</span></figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOBILE BOUTIQUE -->
+<section id="boutique" class="border-b border-edge">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2">
+    <div>
+      <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">Pop-up Retail</p>
+      <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">The NEXO Mobile Boutique</h2>
+      <p class="mt-4 text-silver/75">A custom blacked-out 6×12 ft scrub trailer that visits local hospitals. We pull up at shift change, at nursing schools and at events like Nurses Week, so you can feel the fabric and try the fit before your next shift.</p>
+      <div class="mt-8 grid grid-cols-3 gap-3 text-center">
+        <div class="rounded-md border border-edge bg-panel p-4"><p class="font-tac text-2xl font-bold text-white">6×12</p><p class="text-[11px] uppercase tracking-widest">ft boutique</p></div>
+        <div class="rounded-md border border-edge bg-panel p-4"><p class="font-tac text-2xl font-bold text-white">Shift</p><p class="text-[11px] uppercase tracking-widest">change stops</p></div>
+        <div class="rounded-md border border-edge bg-panel p-4"><p class="font-tac text-2xl font-bold text-white">Events</p><p class="text-[11px] uppercase tracking-widest">Nurses Week &amp; schools</p></div>
+      </div>
+    </div>
+    <form data-form="boutique" method="POST" class="rounded-md border border-edge bg-panel p-6">
+      <p class="font-tac text-2xl font-bold uppercase tracking-wide text-white">Request a Hospital Pop-Up Stop</p>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2">
+        <input required name="name" placeholder="Name" autocomplete="name" class="field">
+        <input required type="email" name="email" placeholder="Email" autocomplete="email" class="field">
+        <input required name="hospital" placeholder="Hospital / clinic name" class="field sm:col-span-2">
+        <input required name="city_state" placeholder="City, State" class="field">
+        <select required name="shift" class="field">
+          <option value="">Your shift</option><option>Day (7a–7p)</option><option>Night (7p–7a)</option><option>Rotating</option><option>Clinic hours</option>
+        </select>
+      </div>
+      <input type="hidden" name="form" value="Mobile Boutique request">
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
+      <button class="mt-4 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Request a Stop</button>
+      <p class="form-msg mt-2 hidden text-sm"></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+  <div class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+    <div class="flex items-center gap-3"><span class="badge-nx">N/X</span><span class="font-tac text-xl font-bold tracking-[.25em] text-white">NEXO</span></div>
+    <div class="flex gap-5 text-sm uppercase tracking-widest">
+      <a href="https://www.instagram.com/nexoscrubsofficial/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        @nexoscrubsofficial
+      </a>
+      <a href="https://www.facebook.com/people/NEXO-Scrubs/61595868156428/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.6V21h2.9z"/></svg>
+        NEXO Scrubs
+      </a>
+    </div>
+  </div>
+  <p class="mt-6 text-xs text-silver/50">© <span id="yr"></span> NEXO by Coll — Technical Medical Apparel · nexoscrubs.com</p>
+</footer>
+
+<script>
+const COLORS = [
+  ['Heather Steel-Blue', '#6f8296'], ['Tactical Olive', '#4f5d36'], ['Deep Maroon', '#5e1f2b'],
+  ['Midnight Navy', '#1c2738'], ['Matte Black', '#151515']
+];
+// One picture per design, never reused. The Hybrid is a future drop.
+const STYLES = [
+  { name: 'Short-Sleeve Athletic Set', img: 'assets/set-short-sleeve.jpg', shown: 'Midnight Navy', fit: 'contain',
+    top: 'Untucked athletic fit, double-contrast V-neck, zippered left-chest pocket plus two lower contrast-trim patch pockets (a hidden zip pocket inside the left).',
+    pant: 'Double drawstring, anchored slant pockets, zippered mid-thigh cargo pockets, articulated knees, 2.0" rib cuffs.' },
+  { name: 'Active Tucked-In Set', img: 'assets/set-tucked-in.jpg', shown: 'Matte Black', fit: 'contain',
+    top: 'Cut to wear tucked in: clean front with no belly pockets, double-contrast V-neck, NEXO shoulder seam branding, zippered chest pocket with pen slot.',
+    pant: 'Double drawstring, anchored slant pockets, zippered mid-thigh cargo pockets with contrast trim, articulated knees, 2.0" rib cuffs.' },
+  { name: 'Active Long-Sleeve Set', img: 'assets/set-long-sleeve.jpg', shown: 'Deep Maroon', fit: 'contain',
+    top: 'Full-length raglan sleeves with ribbed wrist cuffs, double-contrast V-neck, zippered chest pocket and two lower contrast-trim patch pockets.',
+    pant: 'Active jogger with articulated knee paneling, zippered cargo pockets and ribbed cuffs.' },
+  { name: 'Casual Hybrid Set', code: 'NX-2026-CH', img: 'assets/set-hybrid.jpg', future: true,
+    top: 'Hybrid Crew-V rib collar, contrast black shoulder panels with triple-stitching, drop-shoulder raglan fit, zippered chest pocket.',
+    pant: 'Black rib waistband panel, exterior drawcord, covert-zip thigh cargos, gusseted crotch, 2.5" rib cuffs.' }
+];
+// Master briefing US men's chart (inches). Chest is a body range; waist is the relaxed jogger waist.
+const CHART = [
+  { size: 'S',  chest: [36, 38], waist: 30, inseam: 30, length: 28, sleeve: 8.5 },
+  { size: 'M',  chest: [39, 41], waist: 32, inseam: 31, length: 29, sleeve: 9.0 },
+  { size: 'L',  chest: [42, 44], waist: 34, inseam: 32, length: 30, sleeve: 9.5 },
+  { size: 'XL', chest: [45, 47], waist: 36, inseam: 32, length: 31, sleeve: 10.0 }
+];
+
+const cards = document.getElementById('cards');
+STYLES.forEach((s, i) => {
+  const el = document.createElement('article');
+  el.className = 'flex flex-col overflow-hidden rounded-md border border-edge bg-panel' + (s.future ? ' opacity-90' : '');
+  el.innerHTML = `
+    <div class="relative bg-[#d6d6d8]">
+      <img alt="NEXO ${s.name}" src="${s.img}" loading="lazy" class="aspect-[4/5] w-full object-${s.fit || 'cover'} ${s.future ? 'brightness-[.35] grayscale-[60%] blur-[1px]' : ''}">
+      ${s.future
+        ? `<div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
+             <span class="rounded-sm border border-silver/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[.3em] text-silver">Coming later</span>
+             <span class="font-tac text-4xl font-bold uppercase tracking-[.15em] text-white">Future Drop</span>
+           </div>`
+        : `<span class="absolute left-3 top-3 rounded-sm bg-ink/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-white">Drop 01 · Style 0${i + 1}</span>`}
+    </div>
+    <div class="flex flex-1 flex-col p-5">
+      <h3 class="font-tac text-xl font-bold uppercase tracking-wide text-white">${s.name}</h3>
+      <p class="mt-1 text-xs uppercase tracking-widest text-steel">${s.future ? s.code + ' · future drop' : 'Shown in ' + s.shown}</p>
+      ${s.future ? '' : `<div class="mt-3 flex gap-2" aria-label="Available colours">${COLORS.map(([n, h]) => `<span class="dot" style="background:${h}" title="${n}"></span>`).join('')}</div>`}
+      <p class="mt-4 text-sm text-silver/75"><span class="font-semibold text-white">Top · </span>${s.top}</p>
+      <p class="mt-2 text-sm text-silver/75"><span class="font-semibold text-white">Jogger · </span>${s.pant}</p>
+      <div class="mt-auto pt-5">
+        ${s.future
+          ? `<a href="#join" class="block rounded-sm border border-edge py-2 text-center text-[11px] font-bold uppercase tracking-widest text-silver hover:border-silver">Join the list to hear first</a>`
+          : `<a href="#join" data-style="${s.name}" class="pick block rounded-sm border border-silver py-2 text-center text-[11px] font-bold uppercase tracking-widest text-white hover:bg-white hover:text-ink">Reserve this set</a>`}
+      </div>
+    </div>`;
+  cards.appendChild(el);
+});
+document.querySelectorAll('.pick').forEach(a => a.addEventListener('click', () => {
+  document.querySelector('#preorder [name=style]').value = a.dataset.style;
+}));
+document.getElementById('colorList').innerHTML = COLORS.map(([n, h]) => `<span class="inline-flex items-center gap-2"><span class="dot" style="background:${h}"></span>${n}</span>`).join('');
+
+document.getElementById('sizeRows').innerHTML = CHART.map(r =>
+  `<tr class="border-t border-edge"><td class="px-3 py-3 font-tac text-lg font-bold text-white">${r.size}</td><td>${r.chest[0]}–${r.chest[1]}"</td><td>${r.waist}"</td><td>${r.inseam}"</td><td>${r.length}"</td><td>${r.sleeve.toFixed(1)}"</td></tr>`).join('');
+
+// --- Size finder: exact chart lookup, no guessing from height or weight ---
+function topSize(chest) {
+  const first = CHART[0], last = CHART[CHART.length - 1];
+  if (chest < first.chest[0]) return { out: `Your chest is under ${first.chest[0]}", below our smallest size. S will fit loose.`, size: 'S' };
+  if (chest > last.chest[1]) return { out: `Your chest is over ${last.chest[1]}", above our XL. We don't make your size yet; join the list and we'll tell you when we do.` };
+  for (let i = 0; i < CHART.length; i++) {
+    const r = CHART[i];
+    if (chest >= r.chest[0] && chest <= r.chest[1]) return { size: r.size, note: `Chest ${chest}" is inside ${r.size} (${r.chest[0]}–${r.chest[1]}").` };
+    const next = CHART[i + 1];
+    if (next && chest > r.chest[1] && chest < next.chest[0])
+      return { size: next.size, note: `Chest ${chest}" falls between ${r.size} and ${next.size}. Take ${next.size} for room to move, or ${r.size} if you like a closer athletic fit.` };
+  }
+}
+function joggerSize(waist) {
+  const first = CHART[0], last = CHART[CHART.length - 1];
+  // each size covers its chart waist ±1" (the gap between sizes is 2")
+  if (waist < first.waist - 1) return { out: `Your waist is under ${first.waist - 1}", below our smallest jogger. S will fit loose; tighten the drawstring.`, size: 'S' };
+  if (waist > last.waist + 1) return { out: `Your waist is over ${last.waist + 1}", above our XL jogger. We don't make your size yet; join the list and we'll tell you when we do.` };
+  for (const r of CHART) {
+    if (waist === r.waist + 1 && r !== last)
+      return { size: CHART[CHART.indexOf(r) + 1].size, note: `Waist ${waist}" sits right between ${r.size} (${r.waist}") and ${CHART[CHART.indexOf(r) + 1].size}. Take the bigger one for comfort, or ${r.size} and use the drawstring.` };
+    if (waist >= r.waist - 1 && waist <= r.waist + 1) return { size: r.size, note: `Waist ${waist}" matches ${r.size} (${r.waist}" relaxed).` };
+  }
+}
+function inseamNote(inseam, size) {
+  const r = CHART.find(c => c.size === size);
+  if (!inseam || !r) return '';
+  const d = inseam - r.inseam;
+  if (Math.abs(d) <= 1) return `Inseam ${inseam}" is right for the ${size} jogger (${r.inseam}").`;
+  return d > 0
+    ? `Your inseam is ${d.toFixed(1)}" longer than the ${size} jogger (${r.inseam}"). The rib cuffs will sit a little higher on your ankle.`
+    : `Your inseam is ${(-d).toFixed(1)}" shorter than the ${size} jogger (${r.inseam}"). The extra length gathers above the rib cuffs.`;
+}
+
+const finder = document.getElementById('finder'), result = document.getElementById('sizeResult');
+finder.addEventListener('submit', e => {
+  e.preventDefault();
+  const num = n => { const v = parseFloat(finder.elements[n].value); return isFinite(v) && v > 0 ? Math.round(v * 4) / 4 : null; };
+  const chest = num('chest'), waist = num('waist'), inseam = num('inseam');
+  result.classList.remove('hidden');
+  if (!chest && !waist) {
+    result.innerHTML = '<p class="text-sm text-amber-300">Enter your chest, your waist, or both.</p>';
+    return;
+  }
+  const t = chest ? topSize(chest) : null, j = waist ? joggerSize(waist) : null;
+  const box = (label, r) => !r ? '' : `
+    <div class="rounded-md border border-edge bg-ink p-4">
+      <p class="text-[11px] uppercase tracking-widest text-silver/60">${label}</p>
+      <p class="font-tac text-4xl font-bold text-white">${r.size || '—'}</p>
+      <p class="mt-1 text-sm text-silver/75">${r.out || r.note}</p>
+    </div>`;
+  const ins = j && j.size ? inseamNote(inseam, j.size) : '';
+  const canUse = (t && t.size) || (j && j.size);
+  result.innerHTML = `
+    <div class="grid gap-3 sm:grid-cols-2">${box('Top size', t)}${box('Jogger size', j)}</div>
+    ${ins ? `<p class="mt-3 text-sm text-silver/75">${ins}</p>` : ''}
+    ${canUse ? `<button type="button" id="useSizes" class="mt-4 w-full rounded-sm border border-silver py-3 text-sm font-bold uppercase tracking-[.2em] text-white hover:bg-white hover:text-ink">Use these sizes for my pre-order</button>` : ''}`;
+  const use = document.getElementById('useSizes');
+  if (use) use.addEventListener('click', () => {
+    const f = document.getElementById('preorder');
+    if (t && t.size) f.elements.top_size.value = t.size;
+    if (j && j.size) f.elements.jogger_size.value = j.size;
+    document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+const menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('menu');
+menuBtn.addEventListener('click', () => { const open = menu.classList.toggle('hidden') === false; menuBtn.setAttribute('aria-expanded', open); });
+menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.add('hidden')));
+
+// Both forms go to the NEXO Google Sheet (google-sheet-script.gs, deployed as a web app).
+// Paste the web app URL here; until then nothing is sent anywhere.
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbznpNfSfdQXheeOQmGSdUk_wFJKvc-SuIbIq2rbVflC2xrvjqNZ6HeqcGNYym3DXFIpUA/exec';
+
+document.querySelectorAll('form[data-form]').forEach(form => form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const msg = form.querySelector('.form-msg');
+  const btn = form.querySelector('button');
+  msg.classList.remove('hidden');
+  if (!SHEET_URL.startsWith('https://script.google.com/')) {
+    msg.className = 'form-msg mt-2 text-sm text-amber-300';
+    msg.textContent = 'Sign-ups open soon. This form isn\'t connected yet.';
+    return;
+  }
+  btn.disabled = true;
+  try {
+    // Apps Script answers from another domain, so the reply can't be read (no-cors); a network error still throws.
+    await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) });
+    form.reset();
+    msg.className = 'form-msg mt-2 text-sm text-emerald-300';
+    msg.textContent = form.dataset.form === 'preorder'
+      ? 'You\'re in. We\'ll email you to confirm your Drop 01 set.'
+      : 'Request received. We\'ll be in touch about a pop-up stop.';
+  } catch {
+    msg.className = 'form-msg mt-2 text-sm text-red-300';
+    msg.textContent = 'Something went wrong. Please check your connection and try again.';
+  } finally {
+    btn.disabled = false;
+  }
+}));
+
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
