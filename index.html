@@ -565,6 +565,26 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
 const film = document.getElementById('brandFilm');
 if (matchMedia('(prefers-reduced-motion: reduce)').matches) { film.removeAttribute('autoplay'); film.pause(); }
 
+// Visit counter: one row in the Sheet's "Visits" tab per visit (where they came from, phone or computer).
+// No cookies and nothing personal. Links like nexoscrubs.com/?from=ig name the source.
+(() => {
+  if (location.hostname !== 'nexoscrubs.com' || navigator.webdriver) return;
+  const store = (s, k, v) => { try { const old = s.getItem(k); s.setItem(k, v); return old; } catch { return null; } };
+  if (store(sessionStorage, 'nexoVisit', '1')) return; // already counted in this tab
+  const q = new URLSearchParams(location.search);
+  let from = q.get('from') || q.get('utm_source') || '';
+  if (!from && document.referrer) { try { from = new URL(document.referrer).hostname.replace(/^www\./, ''); } catch {} }
+  if (/^(l\.)?(instagram|ig)/.test(from)) from = 'instagram';
+  else if (/tiktok|^tt$/.test(from)) from = 'tiktok';
+  else if (/facebook|^fb$/.test(from)) from = 'facebook';
+  const body = new URLSearchParams({
+    form: 'visit', page: location.pathname + location.hash, from: from || 'direct',
+    device: matchMedia('(pointer: coarse)').matches ? 'phone' : 'computer',
+    returning: store(localStorage, 'nexoSeen', '1') ? 'yes' : 'no',
+  });
+  if (!(navigator.sendBeacon && navigator.sendBeacon(SHEET_URL, body))) fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body }).catch(() => {});
+})();
+
 document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
 </body>
