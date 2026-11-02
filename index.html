@@ -99,6 +99,27 @@
       <p class="mt-5 max-w-xl text-lg text-silver/80">01/50 Launch Edition technical scrubs &amp; Mobile Boutique experience, launching soon. Tailored athletic scrubs for men: 4-way stretch, fluid-resistant, with a tactical zippered pocket system.</p>
       <p class="mt-3 max-w-xl text-sm text-white"><span class="font-semibold">First 50 pre-orders</span> get the numbered <span class="font-semibold">01/50 N/X patch</span> and the <span class="font-semibold">N/X badge reel</span>.</p>
 
+      <!-- Pricing: filled in from RETAIL / FOUNDER_OFF / PREORDER_OFF in the script below -->
+      <div id="pricing" class="mt-6 max-w-xl rounded-md border border-silver/30 bg-panel/90 p-4 sm:p-5">
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-xs font-semibold uppercase tracking-[.2em] text-white">Drop 01 pricing</p>
+          <p class="text-sm text-silver/70"><span class="font-tac text-2xl font-bold text-white" data-price="retail"></span> per set retail</p>
+        </div>
+        <div data-preorder class="mt-4 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-sm border border-white/70 bg-ink p-3">
+            <p class="text-[11px] font-semibold uppercase tracking-[.2em] text-white">First 50 pre-orders</p>
+            <p class="mt-1"><span class="font-tac text-3xl font-bold text-white" data-price="founder"></span> <span class="text-sm text-silver/70" data-off="founder"></span></p>
+            <p class="mt-1 text-xs text-silver/80" data-spots>Founders' price plus the Founders' Kit.</p>
+          </div>
+          <div class="rounded-sm border border-edge bg-ink p-3">
+            <p class="text-[11px] font-semibold uppercase tracking-[.2em] text-silver">Pre-orders after 50</p>
+            <p class="mt-1"><span class="font-tac text-3xl font-bold text-white" data-price="preorder"></span> <span class="text-sm text-silver/70" data-off="preorder"></span></p>
+            <p class="mt-1 text-xs text-silver/60">Until Drop 01 launches.</p>
+          </div>
+        </div>
+        <p data-preorder class="mt-3 text-xs text-silver/70">Good on any Drop 01 set: Short-Sleeve Athletic, Active Tucked-In or Active Long-Sleeve. Your discount comes from your place in line and is applied automatically. Once Drop 01 is out, sets are <span data-price="retail"></span>.</p>
+      </div>
+
       <form id="preorder" data-form="preorder" method="POST" class="mt-7 rounded-md border border-edge bg-panel/90 p-4 sm:p-5">
         <p class="mb-3 text-xs font-semibold uppercase tracking-[.2em] text-white">Reserve your Drop 01 set</p>
         <div class="grid gap-3 sm:grid-cols-2">
@@ -126,6 +147,7 @@
         <input type="tel" name="phone" placeholder="Mobile for SMS drop alerts (optional)" autocomplete="tel" class="field mt-3">
         <label class="mt-3 flex items-start gap-2 text-xs text-silver/75"><input type="checkbox" name="womens" value="Yes" class="mt-0.5 accent-white"> I'd also like a NEXO women's line. Keep me posted.</label>
         <input type="hidden" name="form" value="Drop 01 pre-order">
+        <input type="hidden" name="rid">
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
         <button class="mt-3 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Reserve My Set</button>
         <p class="mt-2 text-xs text-silver/60">No payment today. We'll email you to confirm your set before anything is charged. Not sure of your size? <a href="#size" class="underline underline-offset-2 hover:text-white">Find my size</a>.</p>
@@ -274,7 +296,7 @@
         </div>
         <a href="#join" class="self-start rounded-sm bg-white px-5 py-3 text-xs font-bold uppercase tracking-[.2em] text-ink hover:bg-silver sm:self-auto">Claim a spot</a>
       </div>
-      <p class="mt-3 max-w-3xl text-sm text-silver/75">The first 50 pre-orders get their set in the rigid matte black 01/50 collector box, with two extras made only for them.</p>
+      <p class="mt-3 max-w-3xl text-sm text-silver/75">The first 50 pre-orders get <span class="font-semibold text-white" data-off-text="founder"></span> any Drop 01 set and their set in the rigid matte black 01/50 collector box, with two extras made only for them.</p>
       <div class="mt-6 grid gap-6 md:grid-cols-2">
         <figure><img src="assets/patch-0150.jpg" alt="Numbered 01/50 N/X silicone patch" loading="lazy" class="aspect-video w-full rounded-md border border-edge object-cover"><figcaption class="mt-2"><span class="font-semibold text-white">01/50 N/X patch</span> <span class="text-sm text-silver/70">· numbered Launch Edition silicone patch</span></figcaption></figure>
         <figure><img src="assets/badge-reel.jpg" alt="N/X retractable badge reel, front and back" loading="lazy" class="aspect-video w-full rounded-md border border-edge object-cover"><figcaption class="mt-2"><span class="font-semibold text-white">N/X badge reel</span> <span class="text-sm text-silver/70">· retractable ID badge holder with belt clip</span></figcaption></figure>
@@ -390,6 +412,13 @@
 </footer>
 
 <script>
+// Pricing (Hector 2026-11-02): $86 a set retail. Pre-orders: the first 50 people get 15% off any Drop 01 set,
+// everyone after them 10% off. The Google Sheet script keeps the count (same numbers in google-sheet-script.gs).
+// When Drop 01 is out, set LAUNCHED = true: the pre-order prices disappear and every set shows the retail price.
+const RETAIL = 86, FOUNDERS = 50, FOUNDER_OFF = 15, PREORDER_OFF = 10, LAUNCHED = false;
+const priceAfter = off => Math.round(RETAIL * (100 - off)) / 100;
+const money = v => '$' + (Number.isInteger(v) ? v : v.toFixed(2));
+
 // The first two are the Drop 01 pre-order colors; the rest are coming soon.
 const COLORS = [
   ['Midnight Navy', '#1c2738'], ['Matte Black', '#151515'],
@@ -437,6 +466,9 @@ STYLES.forEach((s, i) => {
       <h3 class="font-tac text-xl font-bold uppercase tracking-wide text-white">${s.name}</h3>
       <p class="mt-1 text-xs uppercase tracking-widest text-steel">${s.future ? s.code + ' · future drop' : 'Shown in ' + s.shown + (NOW.some(([n]) => n === s.shown) ? '' : ' (coming soon)')}</p>
       ${s.future ? '' : `<div class="mt-3 flex items-center gap-2 text-[11px] uppercase tracking-widest text-silver/70" aria-label="Pre-order colors">${NOW.map(([n, h]) => `<span class="dot" style="background:${h}" title="${n}"></span>`).join('')}<span class="ml-1">Navy or Black</span><span class="text-silver/40">· more soon</span></div>`}
+      ${s.future ? '' : LAUNCHED
+        ? `<p class="mt-3 font-tac text-2xl font-bold text-white">${money(RETAIL)}</p>`
+        : `<p class="mt-3 text-sm text-silver/70"><span class="font-tac text-2xl font-bold text-white">${money(priceAfter(FOUNDER_OFF))}</span> <span class="line-through">${money(RETAIL)}</span> · first 50 pre-orders</p>`}
       <p class="mt-4 text-sm text-silver/75"><span class="font-semibold text-white">Top · </span>${s.top}</p>
       <p class="mt-2 text-sm text-silver/75"><span class="font-semibold text-white">Jogger · </span>${s.pant}</p>
       <div class="mt-auto pt-5">
@@ -542,11 +574,21 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
     return;
   }
   btn.disabled = true;
+  const rid = form.elements.rid ? (form.elements.rid.value = Math.random().toString(36).slice(2) + Date.now().toString(36)) : '';
   try {
     // Apps Script answers from another domain, so the reply can't be read (no-cors); a network error still throws.
     await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) });
     form.reset();
     msg.className = 'form-msg mt-2 text-sm text-emerald-300';
+    // a pre-order then asks the Sheet (by its random request id, nothing personal) which number and price it got
+    const mine = rid && await sheetGet({ rid }).then(r => (showSpots(r), r.mine)).catch(() => null);
+    if (mine) {
+      msg.textContent = (mine.founder <= FOUNDERS
+        ? `You're in: Founder #${mine.founder} of ${FOUNDERS}. Your pre-order price is ${money(mine.price)} a set (${mine.off}% off ${money(RETAIL)}), plus the Founders' Kit.`
+        : `You're in: pre-order #${mine.founder}. Your pre-order price is ${money(mine.price)} a set (${mine.off}% off ${money(RETAIL)}).`)
+        + ' We\'ll email you to confirm your Drop 01 set.';
+      return;
+    }
     msg.textContent = {
       preorder: 'You\'re in. We\'ll email you to confirm your Drop 01 set.',
       vote: 'Got it, thanks! We\'ll email you when your color drops.',
@@ -560,6 +602,41 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
     btn.disabled = false;
   }
 }));
+
+// Prices in the pricing box and the Founders' Kit, from the numbers at the top of this script.
+document.querySelectorAll('[data-price]').forEach(el => {
+  el.textContent = money({ retail: RETAIL, founder: priceAfter(FOUNDER_OFF), preorder: priceAfter(PREORDER_OFF) }[el.dataset.price]);
+});
+document.querySelectorAll('[data-off]').forEach(el => {
+  el.innerHTML = `<span class="line-through">${money(RETAIL)}</span> · ${el.dataset.off === 'founder' ? FOUNDER_OFF : PREORDER_OFF}% off`;
+});
+document.querySelectorAll('[data-off-text]').forEach(el => { el.textContent = FOUNDER_OFF + '% off'; });
+if (LAUNCHED) document.querySelectorAll('[data-preorder]').forEach(el => el.remove());
+
+// Reads from the Sheet script's doGet through a <script> tag (Apps Script can't be read with fetch from this domain).
+function sheetGet(params) {
+  return new Promise((ok, fail) => {
+    const cb = 'nexo_' + Math.random().toString(36).slice(2);
+    const tag = document.createElement('script');
+    const done = r => { clearTimeout(timer); delete window[cb]; tag.remove(); r && r.ok ? ok(r) : fail(); };
+    const timer = setTimeout(done, 8000);
+    window[cb] = done;
+    tag.onerror = () => done();
+    tag.src = SHEET_URL + '?' + new URLSearchParams({ ...params, callback: cb });
+    document.head.appendChild(tag);
+  });
+}
+
+// Live founder spots: "37 of 50 founder spots left". If the Sheet doesn't answer, the box keeps its plain text.
+function showSpots(r) {
+  const spots = document.querySelector('[data-spots]');
+  if (!spots || typeof r.left !== 'number') return;
+  spots.innerHTML = r.left > 0
+    ? `<span class="font-semibold text-white">${r.left} of ${FOUNDERS}</span> founder spots left, plus the Founders' Kit.`
+    : `All ${FOUNDERS} founder spots are taken. Pre-orders still get ${PREORDER_OFF}% off.`;
+  if (r.left === 0) spots.closest('.border-white\\/70')?.classList.add('opacity-50');
+}
+if (!LAUNCHED && SHEET_URL.startsWith('https://script.google.com/')) sheetGet({}).then(showSpots).catch(() => {});
 
 // The launch film: people who ask their device for less motion get the still picture instead.
 const film = document.getElementById('brandFilm');
