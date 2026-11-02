@@ -677,11 +677,23 @@ if (matchMedia('(prefers-reduced-motion: reduce)').matches) { film.removeAttribu
 
 // Visit counter: one row in the Sheet's "Visits" tab per visit (where they came from, phone or computer).
 // No cookies and nothing personal. Links like nexoscrubs.com/?from=ig name the source.
+// The owner's own browsers are never counted: open nexoscrubs.com/?me=1 once on each one (?me=0 undoes it).
 (() => {
   if (location.hostname !== 'nexoscrubs.com' || navigator.webdriver) return;
+  const q = new URLSearchParams(location.search);
+  try {
+    if (q.has('me')) {
+      if (q.get('me') === '0') localStorage.removeItem('nexoMe'); else localStorage.setItem('nexoMe', '1');
+      const note = document.createElement('div');
+      note.textContent = localStorage.getItem('nexoMe') ? "This browser won't be counted as a visit." : 'This browser is counted as a visit again.';
+      note.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99;padding:10px 16px;border-radius:6px;background:#111;color:#fff;font:14px sans-serif;border:1px solid #444';
+      document.body.appendChild(note);
+      setTimeout(() => note.remove(), 5000);
+    }
+    if (localStorage.getItem('nexoMe')) return;
+  } catch {}
   const store = (s, k, v) => { try { const old = s.getItem(k); s.setItem(k, v); return old; } catch { return null; } };
   if (store(sessionStorage, 'nexoVisit', '1')) return; // already counted in this tab
-  const q = new URLSearchParams(location.search);
   let from = q.get('from') || q.get('utm_source') || '';
   if (!from && document.referrer) { try { from = new URL(document.referrer).hostname.replace(/^www\./, ''); } catch {} }
   if (/^(l\.)?(instagram|ig)/.test(from)) from = 'instagram';
