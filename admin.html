@@ -75,6 +75,7 @@
         <a href="#traffic" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Visits</a>
         <a href="#payments" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Payments</a>
         <a href="#promos" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Promo codes</a>
+        <a href="#site" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Website</a>
         <button id="refresh" class="ml-2 rounded border border-edge px-3 py-1 hover:text-white">Refresh</button>
         <button id="logout" class="rounded border border-edge px-3 py-1 hover:text-white">Sign out</button>
       </nav>
@@ -139,9 +140,35 @@
       <div id="payList" class="mt-4"></div>
     </section>
 
-    <section id="promos" class="pb-10">
+    <section id="promos">
       <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Promo codes</h2>
       <div id="promoList" class="mt-4"></div>
+    </section>
+
+    <section id="site" class="pb-10">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Website</h2>
+          <p class="text-sm text-silver/70">Your live site, checked and shown right here. Looking at it here never counts as a visit, and its forms are switched off so nothing gets sent by mistake.</p>
+        </div>
+        <div class="flex flex-wrap gap-1 text-xs font-semibold uppercase tracking-widest">
+          <button data-width="390" class="size rounded border border-edge px-3 py-1 hover:text-white">Phone</button>
+          <button data-width="820" class="size rounded border border-edge px-3 py-1 hover:text-white">Tablet</button>
+          <button data-width="1280" class="size rounded border border-edge px-3 py-1 hover:text-white">Computer</button>
+          <button id="siteReload" class="rounded border border-edge px-3 py-1 hover:text-white">Check again</button>
+        </div>
+      </div>
+      <div class="mt-4 grid gap-3 xl:grid-cols-[18rem_1fr]">
+        <div class="card p-4">
+          <h3 class="label">Health check</h3>
+          <ul id="checks" class="mt-3 space-y-2 text-sm"><li class="text-silver/60">Scroll here to run it.</li></ul>
+        </div>
+        <div class="card overflow-hidden p-2">
+          <div id="frameBox" class="mx-auto h-[75vh] max-w-full overflow-hidden rounded border border-edge bg-ink transition-[width]" style="width:390px">
+            <iframe id="siteFrame" title="Your website" class="h-full w-full" loading="lazy"></iframe>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </div>
@@ -361,6 +388,46 @@ function renderPromos() {
     </article>`).join('')}</div>`
     : '<p class="card p-4 text-sm">No promo codes yet. Make one in Stripe: Product catalog &gt; Coupons &gt; Create coupon, then add a customer-facing code.</p>';
 }
+
+// Website viewer: the live page in a frame (same site, so it can be checked from here) + a health check
+const SITE = DEMO ? 'index.html' : '/';
+let siteShown = false;
+function showSite() {
+  siteShown = true;
+  $('checks').innerHTML = '<li class="text-silver/60">Checking...</li>';
+  $('siteFrame').src = SITE + '?view=' + Date.now(); // a fresh copy, not the browser's saved one
+}
+$('siteReload').onclick = showSite;
+document.querySelectorAll('.size').forEach(b => b.onclick = () => { $('frameBox').style.width = b.dataset.width + 'px'; });
+new IntersectionObserver(e => { if (e[0].isIntersecting && !siteShown) showSite(); }).observe($('site'));
+$('siteFrame').addEventListener('load', async () => {
+  const w = $('siteFrame').contentWindow, doc = $('siteFrame').contentDocument;
+  if (!doc || !doc.body || !siteShown) return;
+  // forms in the preview never send anything
+  doc.addEventListener('submit', e => { e.preventDefault(); e.stopImmediatePropagation(); w.alert('Preview only: forms are switched off here.'); }, true);
+  const results = [];
+  const add = (ok, text) => results.push([ok, text]);
+  add(/NEXO/.test(doc.title), 'Page loads: ' + (doc.title || 'no title'));
+  const srcs = [...new Set([...doc.querySelectorAll('img[src], video[poster], video source[src], video[src]')]
+    .map(el => el.getAttribute('src') || el.getAttribute('poster')).filter(u => u && !u.startsWith('data:')))];
+  const bad = [];
+  await Promise.all(srcs.map(u => fetch(new URL(u, w.location.href), { method: 'HEAD', cache: 'no-store' }).then(r => { if (!r.ok) bad.push(u); }).catch(() => bad.push(u))));
+  add(!bad.length, bad.length ? bad.length + ' of ' + srcs.length + ' pictures/videos missing: ' + bad.join(', ') : 'All ' + srcs.length + ' pictures and videos load');
+  const forms = ['preorder', 'womens', 'vote', 'contact'].filter(f => !doc.querySelector('[data-form="' + f + '"]'));
+  add(!forms.length, forms.length ? 'Missing forms: ' + forms.join(', ') : "Pre-order, women's list, color vote and contact forms are there");
+  add(doc.documentElement.innerHTML.includes('buy.stripe.com/'), 'Stripe deposit link is set');
+  add(!!doc.querySelector('[data-price]') && /\$\d/.test(doc.querySelector('[data-price]').textContent), 'Prices show: ' + ((doc.querySelector('[data-price]') || {}).textContent || 'none'));
+  render();
+  // the founder counter asks the Sheet; give it a few seconds
+  const spots = doc.querySelector('[data-spots]');
+  for (let i = 0; i < 20 && spots && !/spots? (left|are taken)/i.test(spots.textContent); i++) await new Promise(r => setTimeout(r, 500));
+  add(spots && /spots? (left|are taken)/i.test(spots.textContent), spots && /spots/i.test(spots.textContent) ? 'Founder counter: ' + spots.textContent.trim() : "Founder counter didn't answer (the Sheet may be slow; try Check again)");
+  add(doc.documentElement.scrollWidth <= w.innerWidth + 1, doc.documentElement.scrollWidth <= w.innerWidth + 1 ? 'Fits the screen at this size' : 'Page is wider than the screen at this size');
+  render();
+  function render() {
+    $('checks').innerHTML = results.map(([ok, t]) => `<li class="flex gap-2"><span class="${ok ? 'text-[#7ee2a8]' : 'text-[#ff8f8f]'}" aria-hidden="true">${ok ? '✓' : '✕'}</span><span>${esc(t)}<span class="sr-only">${ok ? ' (ok)' : ' (problem)'}</span></span></li>`).join('');
+  }
+});
 
 // sample data for checking the layout on localhost (?demo)
 function demo(p) {
