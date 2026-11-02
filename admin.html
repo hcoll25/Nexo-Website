@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>NEXO Owner Dashboard</title>
+<meta name="theme-color" content="#0a0b0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a0b0d' stroke='%23c9ced6' stroke-width='4'/%3E%3Ctext x='32' y='41' font-family='Arial' font-weight='700' font-size='22' fill='%23e6e9ee' text-anchor='middle'%3EN/X%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], tac: ['Rajdhani', 'Inter', 'sans-serif'] },
+      colors: { ink: '#0a0b0d', panel: '#121418', edge: '#23272e', silver: '#c9ced6', steel: '#8aa0b6' }
+    } }
+  }
+</script>
+<style>
+  body { background: #0a0b0d; }
+  .badge-nx { width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 2px solid #c9ced6; display: grid; place-items: center; font: 700 .8rem/1 Rajdhani, sans-serif; color: #e6e9ee; box-shadow: inset 0 0 0 3px #0a0b0d, inset 0 0 0 4px #4b525c; flex-shrink: 0; }
+  .field { width: 100%; border-radius: 2px; border: 1px solid #23272e; background: #0a0b0d; padding: .75rem; color: #fff; }
+  .field:focus { outline: none; border-color: #c9ced6; }
+  input { color-scheme: dark; }
+  .card { border: 1px solid #23272e; background: #121418; border-radius: 6px; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .15em; color: #8aa0b6; }
+  .pill { display: inline-block; border-radius: 9999px; padding: 2px 10px; font-size: 12px; font-weight: 600; border: 1px solid #3a3f47; }
+  .pill-good { color: #7ee2a8; border-color: #2f6b4a; background: #10241a; }
+  .pill-warn { color: #f3c66b; border-color: #6b5426; background: #241d0f; }
+  .pill-bad { color: #ff8f8f; border-color: #6b2f2f; background: #241010; }
+  .live { width: .55rem; height: .55rem; border-radius: 9999px; background: #7ee2a8; box-shadow: 0 0 0 0 rgba(126,226,168,.6); animation: ping 2s infinite; display: inline-block; }
+  @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(126,226,168,0); } 100% { box-shadow: 0 0 0 0 rgba(126,226,168,0); } }
+  .bar { fill: #c9ced6; }
+  #tip { position: fixed; pointer-events: none; z-index: 50; }
+  section { scroll-margin-top: 7rem; }
+  dl.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 14px; }
+  dl.kv dt { color: #8aa0b6; }
+  dl.kv dd { color: #e6e9ee; overflow-wrap: anywhere; }
+</style>
+</head>
+<body class="font-sans text-silver antialiased">
+
+<!-- SIGN IN -->
+<main id="login" class="hidden min-h-screen place-items-center px-4">
+  <form id="loginForm" class="card w-full max-w-sm p-6">
+    <div class="flex items-center gap-3">
+      <span class="badge-nx">N/X</span>
+      <span class="font-tac text-2xl font-bold tracking-[.25em] text-white">NEXO</span>
+    </div>
+    <h1 class="mt-5 text-lg font-semibold text-white">Owner dashboard</h1>
+    <p class="mt-1 text-sm text-silver/70">Orders, payments, promo codes and visits.</p>
+    <label class="mt-5 block text-sm" for="pw">Password</label>
+    <input id="pw" type="password" autocomplete="current-password" class="field mt-1" required>
+    <button class="mt-4 w-full rounded-sm bg-silver py-3 font-semibold uppercase tracking-widest text-ink hover:bg-white">Sign in</button>
+    <p id="loginMsg" class="mt-3 min-h-[1.25rem] text-sm text-[#ff8f8f]" role="alert"></p>
+  </form>
+</main>
+
+<!-- DASHBOARD -->
+<div id="dash" class="hidden">
+  <header class="sticky top-0 z-40 border-b border-edge bg-ink/90 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <div class="flex items-center gap-3">
+        <span class="badge-nx">N/X</span>
+        <div>
+          <p class="font-tac text-xl font-bold tracking-[.2em] text-white leading-none">NEXO OWNER</p>
+          <p id="updated" class="text-xs text-silver/60"></p>
+        </div>
+      </div>
+      <nav class="flex flex-wrap items-center gap-1 text-xs font-semibold uppercase tracking-widest">
+        <a href="#orders" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Orders</a>
+        <a href="#inbox" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Inbox</a>
+        <a href="#traffic" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Visits</a>
+        <a href="#payments" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Payments</a>
+        <a href="#promos" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Promo codes</a>
+        <button id="refresh" class="ml-2 rounded border border-edge px-3 py-1 hover:text-white">Refresh</button>
+        <button id="logout" class="rounded border border-edge px-3 py-1 hover:text-white">Sign out</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:px-6">
+    <p id="err" class="hidden card border-[#6b2f2f] p-3 text-sm text-[#ff8f8f]" role="alert"></p>
+    <section id="tiles" class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6"></section>
+
+    <section id="orders">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Pre-orders</h2>
+          <p id="ordersSub" class="text-sm text-silver/70"></p>
+        </div>
+        <input id="search" type="search" placeholder="Search name, email, hospital, size..." class="field max-w-xs py-2">
+      </div>
+      <div id="orderList" class="mt-4 grid gap-3 lg:grid-cols-2"></div>
+    </section>
+
+    <section id="inbox">
+      <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Inbox</h2>
+      <p class="text-sm text-silver/70">What people are asking for: messages, Mobile Boutique requests, color votes and the women's list.</p>
+      <div class="mt-4 grid gap-6 lg:grid-cols-2">
+        <div><h3 class="label mb-2">Messages</h3><div id="messages" class="space-y-3"></div></div>
+        <div><h3 class="label mb-2">Mobile Boutique requests</h3><div id="boutique" class="space-y-3"></div></div>
+        <div><h3 class="label mb-2">Color votes</h3><div id="votes" class="card p-4"></div></div>
+        <div><h3 class="label mb-2">Women's list</h3><div id="women" class="card p-4"></div></div>
+      </div>
+    </section>
+
+    <section id="traffic">
+      <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Visits</h2>
+      <p class="text-sm text-silver/70">Real visitors only: your browsers, mine and SENTINEL's checks are not counted. Updates every minute.</p>
+      <div class="mt-4 grid gap-3 lg:grid-cols-3">
+        <div class="card p-4 lg:col-span-2">
+          <h3 class="label">Visits per day · last 14 days</h3>
+          <div id="chart" class="mt-3"></div>
+        </div>
+        <div class="card p-4">
+          <h3 class="label">Where they came from · 30 days</h3>
+          <div id="sources" class="mt-3 space-y-2"></div>
+          <h3 class="label mt-5">Phone or computer · 30 days</h3>
+          <div id="devices" class="mt-3 space-y-2"></div>
+        </div>
+      </div>
+      <div class="card mt-3 p-4">
+        <h3 class="label">Latest visits</h3>
+        <div class="mt-2 overflow-x-auto">
+          <table class="w-full min-w-[480px] text-left text-sm">
+            <thead class="text-silver/60"><tr><th class="py-1 font-medium">When</th><th class="font-medium">Came from</th><th class="font-medium">Device</th><th class="font-medium">Visited before</th><th class="font-medium">Page</th></tr></thead>
+            <tbody id="recent" class="text-silver"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="payments">
+      <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Payments</h2>
+      <p id="paySub" class="text-sm text-silver/70"></p>
+      <div id="payList" class="mt-4"></div>
+    </section>
+
+    <section id="promos" class="pb-10">
+      <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Promo codes</h2>
+      <div id="promoList" class="mt-4"></div>
+    </section>
+  </main>
+</div>
+<div id="tip" class="hidden rounded border border-edge bg-ink px-2 py-1 text-xs text-white"></div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbznpNfSfdQXheeOQmGSdUk_wFJKvc-SuIbIq2rbVflC2xrvjqNZ6HeqcGNYym3DXFIpUA/exec';
+const DEMO = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).has('demo');
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = v => '$' + Number(v || 0).toFixed(2);
+const day = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const when = d => d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+const store = { get: k => { try { return sessionStorage.getItem(k); } catch { return null; } },
+                set: (k, v) => { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k); } catch {} } };
+// rows from the Sheet: [header, ...rows] -> objects keyed by header
+const rows = t => (t && t.length > 1 ? t.slice(1).map(r => Object.fromEntries(t[0].map((h, i) => [h, r[i]]))) : []).reverse();
+let data = null, timer = null;
+
+async function call(params) {
+  if (DEMO) return demo(params);
+  const r = await fetch(SHEET_URL, { method: 'POST', body: new URLSearchParams(Object.assign({ form: 'admin' }, params)) });
+  return r.json();
+}
+
+function showLogin(msg) {
+  clearInterval(timer);
+  $('dash').classList.add('hidden');
+  $('login').classList.remove('hidden');
+  $('login').classList.add('grid');
+  $('loginMsg').textContent = msg || '';
+  $('pw').focus();
+}
+
+async function load() {
+  try {
+    const r = await call({ token: store.get('nexoAdmin') || '' });
+    if (!r.ok) { store.set('nexoAdmin', ''); return showLogin(r.signedOut ? '' : r.error); }
+    data = r;
+    $('err').classList.add('hidden');
+    $('login').classList.add('hidden');
+    $('dash').classList.remove('hidden');
+    render();
+  } catch (e) {
+    if (!data) return showLogin("Couldn't reach the Sheet. Check your connection and try again.");
+    $('err').textContent = "Couldn't refresh just now; showing the last numbers. It will try again in a minute.";
+    $('err').classList.remove('hidden');
+  }
+}
+
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('loginMsg').textContent = 'Signing in...';
+  try {
+    const r = await call({ password: $('pw').value });
+    if (!r.ok) return showLogin(r.error);
+    $('pw').value = '';
+    store.set('nexoAdmin', r.token);
+    try { localStorage.setItem('nexoMe', '1'); } catch {} // this browser is the owner's: never count it as a visit
+    data = r;
+    $('login').classList.add('hidden');
+    $('dash').classList.remove('hidden');
+    render();
+    startTimer();
+  } catch { showLogin("Couldn't reach the Sheet. Check your connection and try again."); }
+});
+$('refresh').onclick = load;
+$('logout').onclick = async () => { const token = store.get('nexoAdmin'); store.set('nexoAdmin', ''); data = null; try { await call({ token, action: 'logout' }); } catch {} showLogin(); };
+$('search').oninput = renderOrders;
+function startTimer() { clearInterval(timer); timer = setInterval(() => { if (!document.hidden) load(); }, 60000); }
+
+function render() {
+  $('updated').textContent = 'Updated ' + when(new Date(data.now));
+  renderTiles(); renderOrders(); renderInbox(); renderVisits(); renderPayments(); renderPromos();
+}
+
+function visitList() { return data.visits.map(v => ({ t: new Date(v[0]), page: v[1], from: v[2] || 'direct', device: v[3], back: v[4] })).filter(v => !isNaN(v.t)); }
+function paidDeposits() { const s = data.stripe; return s && s.payments ? s.payments.filter(p => p.status === 'paid' && p.amount > p.refunded) : []; }
+
+function renderTiles() {
+  const v = visitList(), now = Date.now(), today = new Date().toDateString();
+  const orders = rows(data.forms['Pre-orders']);
+  const paid = paidDeposits(), s = data.stripe || {};
+  const tile = (label, value, sub, live) => `<div class="card p-4"><p class="label flex items-center gap-2">${live ? '<span class="live"></span>' : ''}${label}</p><p class="mt-2 font-tac text-4xl font-bold text-white">${value}</p><p class="mt-1 text-xs text-silver/60">${sub}</p></div>`;
+  $('tiles').innerHTML = [
+    tile('On the site now', v.filter(x => now - x.t < 30 * 60000).length, 'visits in the last 30 min', true),
+    tile('Visits today', v.filter(x => x.t.toDateString() === today).length, v.filter(x => now - x.t < 7 * 864e5).length + ' in the last 7 days'),
+    tile('Pre-orders', orders.length, data.left + ' of ' + data.founders + ' founder spots left'),
+    tile('Deposits paid', paid.length, s.connected ? money(paid.reduce((t, p) => t + p.amount - p.refunded, 0)) + ' collected' : 'connect Stripe below'),
+    tile('Not paid yet', Math.max(0, orders.length - orders.filter(o => depositFor(o)).length), 'pre-orders without a deposit'),
+    tile('In Stripe', s.connected && !s.error ? money(s.available) : '—', s.connected && !s.error ? money(s.pending) + ' on the way' : 'not connected'),
+  ].join('');
+}
+
+// the deposit a pre-order paid: Stripe's reference NEXO-<number>, else the same email
+function depositFor(o) {
+  const n = String(o['Founder #']), mail = String(o.email || '').toLowerCase();
+  return paidDeposits().find(p => p.ref === 'NEXO-' + n) || paidDeposits().find(p => mail && p.email.toLowerCase() === mail);
+}
+
+function renderOrders() {
+  const all = rows(data.forms['Pre-orders']), q = $('search').value.trim().toLowerCase();
+  const list = all.filter(o => !q || JSON.stringify(o).toLowerCase().includes(q) || (depositFor(o) || {}).name?.toLowerCase().includes(q));
+  $('ordersSub').textContent = all.length ? `${all.length} pre-order${all.length === 1 ? '' : 's'}, newest first. Everything each person filled in.` : '';
+  if (!list.length) { $('orderList').innerHTML = `<p class="card p-4 text-sm">${all.length ? 'Nothing matches that search.' : 'No pre-orders yet. They show up here the moment someone sends the form.'}</p>`; return; }
+  const kv = (k, v) => v ? `<dt>${k}</dt><dd>${v}</dd>` : '';
+  $('orderList').innerHTML = list.map(o => {
+    const n = Number(o['Founder #']), dep = depositFor(o), founder = n <= data.founders;
+    return `<article class="card p-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <p class="font-tac text-2xl font-bold text-white">#${esc(n)} ${dep && dep.name ? '· ' + esc(dep.name) : ''}</p>
+        <div class="flex gap-2">${founder ? '<span class="pill">Founders\' Kit</span>' : ''}${dep ? `<span class="pill pill-good">Deposit paid ${money(dep.amount - dep.refunded)}</span>` : '<span class="pill pill-warn">No deposit yet</span>'}</div>
+      </div>
+      <p class="mt-1 text-xs text-silver/60">${esc(o.Time)}</p>
+      <dl class="kv mt-3">
+        ${kv('Email', `<a class="underline hover:text-white" href="mailto:${esc(o.email)}">${esc(o.email)}</a>`)}
+        ${kv('Phone', o.phone && `<a class="underline hover:text-white" href="tel:${esc(o.phone)}">${esc(o.phone)}</a>`)}
+        ${kv('Hospital', esc(o.hospital))}
+        ${kv('Style', esc(o.style))}
+        ${kv('Color', esc(o.color))}
+        ${kv('Top size', esc(o.top_size))}
+        ${kv('Jogger size', esc(o.jogger_size))}
+        ${kv('Color wish', esc(o.color_wish))}
+        ${kv("Women's line", esc(o.womens))}
+        ${kv('Price', esc(o['Pre-order price']))}
+        ${kv('Due at shipping', esc(o['Due at shipping']))}
+        ${dep && dep.phone && dep.phone !== o.phone ? kv('Stripe phone', esc(dep.phone)) : ''}
+      </dl>
+    </article>`;
+  }).join('');
+}
+
+function renderInbox() {
+  const none = what => `<p class="card p-4 text-sm text-silver/70">No ${what} yet.</p>`;
+  const msgs = rows(data.forms.Messages);
+  $('messages').innerHTML = msgs.length ? msgs.map(m => `<article class="card p-4">
+      <div class="flex flex-wrap items-baseline justify-between gap-2"><p class="font-semibold text-white">${esc(m.name)}</p><p class="text-xs text-silver/60">${esc(m.Time)}</p></div>
+      <p class="mt-2 whitespace-pre-wrap text-sm">${esc(m.message)}</p>
+      <a class="mt-3 inline-block text-sm underline hover:text-white" href="mailto:${esc(m.email)}?subject=${encodeURIComponent('Re: your message to NEXO')}">Reply to ${esc(m.email)}</a>
+    </article>`).join('') : none('messages');
+  const bout = rows(data.forms['Boutique requests']);
+  $('boutique').innerHTML = bout.length ? bout.map(b => `<article class="card p-4">
+      <div class="flex flex-wrap items-baseline justify-between gap-2"><p class="font-semibold text-white">${esc(b.hospital)}</p><p class="text-xs text-silver/60">${esc(b.Time)}</p></div>
+      <dl class="kv mt-2"><dt>From</dt><dd>${esc(b.name)}</dd><dt>Where</dt><dd>${esc(b.city_state)}</dd><dt>Shift</dt><dd>${esc(b.shift)}</dd>
+      <dt>Email</dt><dd><a class="underline hover:text-white" href="mailto:${esc(b.email)}">${esc(b.email)}</a></dd></dl>
+    </article>`).join('') : none('boutique requests');
+  const votes = rows(data.forms['Color votes']), count = {};
+  votes.forEach(v => { const c = String(v.color_wish || '').trim(); if (c) count[c] = (count[c] || 0) + 1; });
+  $('votes').innerHTML = votes.length ? bars(Object.entries(count)) + `<p class="mt-3 text-xs text-silver/60">${votes.length} vote${votes.length === 1 ? '' : 's'}${votes.filter(v => /yes|true|on/i.test(v.womens)).length ? ', ' + votes.filter(v => /yes|true|on/i.test(v.womens)).length + ' also want the women\'s line' : ''}</p>` : '<p class="text-sm text-silver/70">No color votes yet.</p>';
+  const women = rows(data.forms["Women's list"]);
+  $('women').innerHTML = women.length ? `<p class="text-sm"><span class="font-tac text-3xl font-bold text-white">${women.length}</span> want the women's drop</p>
+      <ul class="mt-2 max-h-48 space-y-1 overflow-y-auto text-sm">${women.map(w => `<li class="flex justify-between gap-3"><span class="truncate">${esc(w.email)}</span><span class="shrink-0 text-silver/50">${esc(String(w.Time).split(' ')[0])}</span></li>`).join('')}</ul>
+      <button id="copyWomen" class="mt-3 rounded border border-edge px-3 py-1 text-xs uppercase tracking-widest hover:text-white">Copy all emails</button>` : '<p class="text-sm text-silver/70">Nobody on the list yet.</p>';
+  if ($('copyWomen')) $('copyWomen').onclick = e => { navigator.clipboard.writeText(women.map(w => w.email).join(', ')).then(() => { e.target.textContent = 'Copied'; }); };
+}
+
+// horizontal bars: name, bar, count (largest first)
+function bars(pairs) {
+  const max = Math.max(1, ...pairs.map(p => p[1]));
+  return pairs.sort((a, b) => b[1] - a[1]).map(([k, n]) => `<div class="grid grid-cols-[7rem_1fr_2.5rem] items-center gap-2 text-sm">
+      <span class="truncate" title="${esc(k)}">${esc(k)}</span>
+      <span class="h-2 rounded-r bg-silver" style="width:${Math.max(2, n / max * 100)}%"></span>
+      <span class="text-right text-white">${n}</span></div>`).join('');
+}
+
+function renderVisits() {
+  const v = visitList(), now = Date.now(), month = v.filter(x => now - x.t < 30 * 864e5);
+  // 14 day columns, oldest first
+  const days = [];
+  for (let i = 13; i >= 0; i--) { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - i); days.push({ d, n: 0 }); }
+  v.forEach(x => { const t = new Date(x.t); t.setHours(0, 0, 0, 0); const slot = days.find(s => s.d.getTime() === t.getTime()); if (slot) slot.n++; });
+  const max = Math.max(4, ...days.map(s => s.n)), W = 700, H = 200, pad = 22, bw = (W - 30) / 14;
+  const top = Math.ceil(max / 4) * 4, y = n => H - pad - (n / top) * (H - pad - 10);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" class="w-full" role="img" aria-label="Visits per day for the last 14 days">`;
+  for (let g = 0; g <= 4; g++) { const val = top / 4 * g; svg += `<line x1="28" x2="${W}" y1="${y(val)}" y2="${y(val)}" stroke="#23272e"/><text x="22" y="${y(val) + 4}" fill="#8aa0b6" font-size="11" text-anchor="end">${val}</text>`; }
+  days.forEach((s, i) => {
+    const x = 30 + i * bw, h = H - pad - y(s.n), bx = x + bw * .2, w = bw * .6, r = Math.min(4, h / 2);
+    if (s.n) svg += `<path class="bar" d="M${bx},${H - pad} V${y(s.n) + r} q0,-${r} ${r},-${r} H${bx + w - r} q${r},0 ${r},${r} V${H - pad} Z"/>`;
+    svg += `<rect class="hit" data-tip="${day(s.d)}: ${s.n} visit${s.n === 1 ? '' : 's'}" x="${x}" y="0" width="${bw}" height="${H - pad}" fill="transparent"/>`;
+    if (i % 2 === 1 || i === 13) svg += `<text x="${x + bw / 2}" y="${H - 6}" fill="#8aa0b6" font-size="11" text-anchor="middle">${i === 13 ? 'Today' : day(s.d)}</text>`;
+  });
+  $('chart').innerHTML = svg + '</svg>';
+  $('chart').querySelectorAll('.hit').forEach(r => {
+    r.onmousemove = e => { $('tip').textContent = r.dataset.tip; $('tip').classList.remove('hidden'); $('tip').style.left = e.clientX + 12 + 'px'; $('tip').style.top = e.clientY - 30 + 'px'; };
+    r.onmouseleave = () => $('tip').classList.add('hidden');
+  });
+  const tally = key => { const c = {}; month.forEach(x => { c[x[key]] = (c[x[key]] || 0) + 1; }); return Object.entries(c); };
+  $('sources').innerHTML = month.length ? bars(tally('from')) : '<p class="text-sm text-silver/70">No visits yet.</p>';
+  $('devices').innerHTML = month.length ? bars(tally('device')) : '';
+  $('recent').innerHTML = v.slice(-15).reverse().map(x => `<tr class="border-t border-edge"><td class="py-1.5">${when(x.t)}</td><td>${esc(x.from)}</td><td>${esc(x.device)}</td><td>${x.back === 'yes' ? 'yes' : 'no'}</td><td>${esc(x.page)}</td></tr>`).join('')
+    || '<tr><td class="py-2" colspan="5">No visits yet.</td></tr>';
+}
+
+function renderPayments() {
+  const s = data.stripe || {};
+  if (!s.connected) {
+    $('paySub').textContent = '';
+    $('payList').innerHTML = `<div class="card p-4 text-sm">Stripe isn't connected yet. Add a read-only Stripe key as <b class="text-white">STRIPE_KEY</b> in Apps Script &gt; Project Settings &gt; Script properties, and your deposits show up here.</div>`;
+    return;
+  }
+  if (s.error) { $('payList').innerHTML = `<p class="card p-4 text-sm text-[#ff8f8f]">Stripe answered: ${esc(s.error)}</p>`; return; }
+  $('paySub').textContent = (s.test ? 'TEST MODE · ' : '') + 'Every completed checkout, newest first.';
+  $('payList').innerHTML = s.payments.length ? `<div class="card overflow-x-auto p-4"><table class="w-full min-w-[640px] text-left text-sm">
+      <thead class="text-silver/60"><tr><th class="py-1 font-medium">When</th><th class="font-medium">Name</th><th class="font-medium">Email</th><th class="font-medium">Pre-order</th><th class="font-medium text-right">Amount</th><th class="pl-4 font-medium">Status</th></tr></thead>
+      <tbody>${s.payments.map(p => `<tr class="border-t border-edge"><td class="py-1.5">${when(new Date(p.time * 1000))}</td><td class="text-white">${esc(p.name)}</td><td>${esc(p.email)}</td><td>${esc(p.ref.replace('NEXO-', '#'))}</td>
+        <td class="text-right text-white">${money(p.amount)}${p.discount ? ` <span class="text-silver/60">(-${money(p.discount)} code)</span>` : ''}</td>
+        <td class="pl-4">${p.refunded >= p.amount && p.amount ? '<span class="pill pill-bad">Refunded</span>' : p.refunded ? `<span class="pill pill-warn">${money(p.refunded)} refunded</span>` : p.status === 'paid' ? '<span class="pill pill-good">Paid</span>' : `<span class="pill">${esc(p.status)}</span>`}</td></tr>`).join('')}</tbody></table></div>`
+    : '<p class="card p-4 text-sm">No payments yet.</p>';
+}
+
+function renderPromos() {
+  const s = data.stripe || {};
+  if (!s.connected || s.error) { $('promoList').innerHTML = '<p class="card p-4 text-sm text-silver/70">Shows up once Stripe is connected.</p>'; return; }
+  $('promoList').innerHTML = s.promos.length ? `<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">${s.promos.map(c => `<article class="card p-4">
+      <div class="flex items-center justify-between gap-2"><p class="font-tac text-2xl font-bold tracking-wider text-white">${esc(c.code)}</p>${c.active ? '<span class="pill pill-good">Active</span>' : '<span class="pill">Off</span>'}</div>
+      <dl class="kv mt-2"><dt>Discount</dt><dd>${esc(c.off)} off</dd><dt>Used</dt><dd>${c.used}${c.max ? ' of ' + c.max : ''} time${c.used === 1 ? '' : 's'}</dd>${c.expires ? `<dt>Ends</dt><dd>${day(new Date(c.expires * 1000))}</dd>` : ''}</dl>
+    </article>`).join('')}</div>`
+    : '<p class="card p-4 text-sm">No promo codes yet. Make one in Stripe: Product catalog &gt; Coupons &gt; Create coupon, then add a customer-facing code.</p>';
+}
+
+// sample data for checking the layout on localhost (?demo)
+function demo(p) {
+  if (p.password !== undefined && p.password !== 'demo') return { ok: false, error: 'Wrong password.' };
+  if (p.action === 'logout') return { ok: true };
+  if (!p.password && !p.token) return { ok: false, signedOut: true };
+  const now = Date.now(), visits = [];
+  for (let i = 0; i < 160; i++) visits.push([new Date(now - Math.random() * 13 * 864e5 - (i < 3 ? 0 : 1800e3)).toISOString(), '/', ['direct', 'instagram', 'tiktok', 'facebook'][i % 7 % 4], i % 3 ? 'phone' : 'computer', i % 4 ? 'no' : 'yes']);
+  visits.sort((a, b) => a[0] < b[0] ? -1 : 1);
+  const head = ['Time', 'Founder #', 'email', 'hospital', 'style', 'color', 'top_size', 'jogger_size', 'phone', 'color_wish', 'womens', 'Pre-order price', 'Deposit', 'Due at shipping'];
+  return { ok: true, token: 'demo', now: new Date().toISOString(), retail: 86, founders: 50, deposit: 40, left: 47,
+    forms: {
+      'Pre-orders': [head, ['10/31/2026 9:12:04', 1, 'marcus.rn@example.com', 'Froedtert Hospital', 'Active Tucked-In', 'Navy', 'L', 'L', '414-555-0101', 'Olive', '', '$73.10 (15% off)', '$40.00', '$33.10'],
+                           ['11/1/2026 18:40:11', 2, 'dj@example.com', "Children's Wisconsin", 'Multi-Pocket Active', 'Black', 'M', 'M', '', '', 'yes', '$73.10 (15% off)', '$40.00', '$33.10'],
+                           ['11/2/2026 10:02:55', 3, 'tyler@example.com', 'Aurora St. Luke\'s', 'Active Long-Sleeve', 'Navy', 'XL', 'L', '414-555-0199', '', '', '$73.10 (15% off)', '$40.00', '$33.10']],
+      Messages: [['Time', 'name', 'email', 'message'], ['11/1/2026 12:30:00', 'Andre', 'andre@example.com', 'Do the joggers come in tall? I\'m 6\'4" and most scrubs are too short.\nAlso, do you ship to Chicago?']],
+      'Boutique requests': [['Time', 'name', 'email', 'hospital', 'city_state', 'shift'], ['11/2/2026 8:15:00', 'Kim', 'kim@example.com', 'Ascension Columbia St. Mary\'s', 'Milwaukee, WI', 'Day shift, 7 AM']],
+      'Color votes': [['Time', 'email', 'color_wish', 'womens'], ['', 'a@example.com', 'Olive', 'yes'], ['', 'b@example.com', 'Olive', ''], ['', 'c@example.com', 'Burgundy', '']],
+      "Women's list": [['Time', 'email'], ['11/1/2026 9:00:00', 'sara@example.com'], ['11/2/2026 7:00:00', 'lena@example.com']] },
+    visits, stripe: { connected: true, test: false, available: 0, pending: 77.24, promos: [{ code: 'NURSESWEEK', active: true, used: 0, max: 50, expires: null, off: '10%' }],
+      payments: [{ time: now / 1000 - 3600, ref: 'NEXO-3', name: 'Tyler Brooks', email: 'tyler@example.com', phone: '', amount: 40, status: 'paid', refunded: 0, discount: 0 },
+                 { time: now / 1000 - 90000, ref: 'NEXO-1', name: 'Marcus Hill', email: 'marcus.rn@example.com', phone: '', amount: 40, status: 'paid', refunded: 0, discount: 0 }] } };
+}
+
+if (store.get('nexoAdmin')) { load(); startTimer(); } else showLogin();
+</script>
+</body>
+</html>
