@@ -120,7 +120,7 @@
           </div>
         </div>
         <p data-preorder class="mt-3 text-sm text-white">Reserve with a <span class="font-semibold" data-price="deposit"></span> deposit. The rest is charged when your set ships.</p>
-        <p data-preorder class="mt-2 text-xs text-silver/70">Good on any Drop 01 set: Short-Sleeve Athletic, Active Tucked-In or Active Long-Sleeve. Your discount comes from your place in line and is applied automatically. Once Drop 01 is out, sets are <span data-price="retail"></span>.</p>
+        <p data-preorder class="mt-2 text-xs text-silver/70">Good on either Drop 01 set: the Short-Sleeve Athletic (untucked) or the Active Tucked-In. Your discount comes from your place in line and is applied automatically. Once Drop 01 is out, sets are <span data-price="retail"></span>.</p>
       </div>
 
       <form id="preorder" data-form="preorder" method="POST" class="mt-7 rounded-md border border-edge bg-panel/90 p-4 sm:p-5">
@@ -132,7 +132,6 @@
             <option value="">Style</option>
             <option>Short-Sleeve Athletic Set</option>
             <option>Active Tucked-In Set</option>
-            <option>Active Long-Sleeve Set</option>
           </select>
           <select required name="color" class="field">
             <option value="">Color</option>
@@ -187,8 +186,9 @@
   <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6">
     <p class="text-xs font-semibold uppercase tracking-[.3em] text-steel">Drop 01 · Men's</p>
     <h2 class="mt-2 font-tac text-4xl font-bold uppercase tracking-wide text-white sm:text-5xl">The Collection</h2>
-    <p class="mt-3 max-w-2xl text-silver/75">Three sets launch in Drop 01, each its own design. Every one has ergonomic paneling, flatlock athletic stitching (10–12 SPI) and the 1.75" 3D silicone N/X patch on the sleeve.</p>
+    <p class="mt-3 max-w-2xl text-silver/75">Drop 01 is two short-sleeve sets, one worn untucked and one cut to tuck in. Both have ergonomic paneling, flatlock athletic stitching (10–12 SPI) and the 1.75" 3D silicone N/X patch on the sleeve.</p>
     <div id="cards" class="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-4"></div>
+    <p class="mt-4 text-sm text-silver/60">The Active Long-Sleeve Set comes next. It launches after Drop 01, and how fast depends on how the short-sleeve sets do, so every pre-order brings it closer.</p>
 
     <figure class="mt-14">
       <div class="relative">
@@ -431,7 +431,8 @@ const COLORS = [
   ['Deep Maroon', '#5e1f2b'], ['Tactical Olive', '#4f5d36'], ['Heather Steel-Blue', '#6f8296']
 ];
 const NOW = COLORS.slice(0, 2), SOON = COLORS.slice(2);
-// One picture per design, never reused. The Hybrid is a future drop.
+// One picture per design, never reused. Drop 01 = the two short-sleeve sets; the Long-Sleeve comes next
+// (Hector 2026-11-02: it launches depending on how the short sleeves sell), the Hybrid is a future drop.
 const STYLES = [
   { name: 'Short-Sleeve Athletic Set', img: 'assets/set-short-sleeve.jpg', shown: 'Midnight Navy', fit: 'contain',
     top: 'Untucked athletic fit, double-contrast V-neck, zippered left-chest pocket plus two lower contrast-trim patch pockets (with a hidden zip pocket inside the left one).',
@@ -439,7 +440,7 @@ const STYLES = [
   { name: 'Active Tucked-In Set', img: 'assets/set-tucked-in.jpg', shown: 'Matte Black', fit: 'contain',
     top: 'Cut to wear tucked in: clean front with no belly pockets, double-contrast V-neck, NEXO shoulder seam branding, zippered chest pocket with pen slot.',
     pant: 'Double drawstring, anchored slant pockets, zippered mid-thigh cargo pockets with contrast trim, articulated knees, 2.0" rib cuffs.' },
-  { name: 'Active Long-Sleeve Set', img: 'assets/set-long-sleeve.jpg', shown: 'Deep Maroon', fit: 'contain',
+  { name: 'Active Long-Sleeve Set', img: 'assets/set-long-sleeve.jpg', shown: 'Deep Maroon', fit: 'contain', next: true,
     top: 'Full-length raglan sleeves with ribbed wrist cuffs, double-contrast V-neck, zippered chest pocket and two lower contrast-trim patch pockets.',
     pant: 'Active jogger with articulated knee paneling, zippered cargo pockets and ribbed cuffs.' },
   { name: 'Casual Hybrid Set', code: 'NX-2026-CH', img: 'assets/set-hybrid.jpg', future: true,
@@ -457,7 +458,8 @@ const CHART = [
 const cards = document.getElementById('cards');
 STYLES.forEach((s, i) => {
   const el = document.createElement('article');
-  el.className = 'flex flex-col overflow-hidden rounded-md border border-edge bg-panel' + (s.future ? ' opacity-90' : '');
+  const later = s.future || s.next;
+  el.className = 'flex flex-col overflow-hidden rounded-md border border-edge bg-panel' + (later ? ' opacity-90' : '');
   el.innerHTML = `
     <div class="relative bg-[#d6d6d8]">
       <img alt="NEXO ${s.name}" src="${s.img}" loading="lazy" class="aspect-[4/5] w-full object-${s.fit || 'cover'} ${s.future ? 'brightness-[.35] grayscale-[60%] blur-[1px]' : ''}">
@@ -466,19 +468,21 @@ STYLES.forEach((s, i) => {
              <span class="rounded-sm border border-silver/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[.3em] text-silver">Coming later</span>
              <span class="font-tac text-4xl font-bold uppercase tracking-[.15em] text-white">Future Drop</span>
            </div>`
+        : s.next
+        ? `<span class="absolute left-3 top-3 rounded-sm border border-silver/60 bg-ink/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-silver">Coming next · after Drop 01</span>`
         : `<span class="absolute left-3 top-3 rounded-sm bg-ink/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-white">Drop 01 · Style 0${i + 1}</span>`}
     </div>
     <div class="flex flex-1 flex-col p-5">
       <h3 class="font-tac text-xl font-bold uppercase tracking-wide text-white">${s.name}</h3>
-      <p class="mt-1 text-xs uppercase tracking-widest text-steel">${s.future ? s.code + ' · future drop' : 'Shown in ' + s.shown + (NOW.some(([n]) => n === s.shown) ? '' : ' (coming soon)')}</p>
-      ${s.future ? '' : `<div class="mt-3 flex items-center gap-2 text-[11px] uppercase tracking-widest text-silver/70" aria-label="Pre-order colors">${NOW.map(([n, h]) => `<span class="dot" style="background:${h}" title="${n}"></span>`).join('')}<span class="ml-1">Navy or Black</span><span class="text-silver/40">· more soon</span></div>`}
-      ${s.future ? '' : LAUNCHED
+      <p class="mt-1 text-xs uppercase tracking-widest text-steel">${s.future ? s.code + ' · future drop' : s.next ? 'Next drop · not in Drop 01' : 'Shown in ' + s.shown + (NOW.some(([n]) => n === s.shown) ? '' : ' (coming soon)')}</p>
+      ${later ? '' : `<div class="mt-3 flex items-center gap-2 text-[11px] uppercase tracking-widest text-silver/70" aria-label="Pre-order colors">${NOW.map(([n, h]) => `<span class="dot" style="background:${h}" title="${n}"></span>`).join('')}<span class="ml-1">Navy or Black</span><span class="text-silver/40">· more soon</span></div>`}
+      ${later ? '' : LAUNCHED
         ? `<p class="mt-3 font-tac text-2xl font-bold text-white">${money(RETAIL)}</p>`
         : `<p class="mt-3 text-sm text-silver/70"><span class="font-tac text-2xl font-bold text-white">${money(priceAfter(FOUNDER_OFF))}</span> <span class="line-through">${money(RETAIL)}</span> · first 50 pre-orders</p>`}
       <p class="mt-4 text-sm text-silver/75"><span class="font-semibold text-white">Top · </span>${s.top}</p>
       <p class="mt-2 text-sm text-silver/75"><span class="font-semibold text-white">Jogger · </span>${s.pant}</p>
       <div class="mt-auto pt-5">
-        ${s.future
+        ${later
           ? `<a href="#join" class="block rounded-sm border border-edge py-2 text-center text-[11px] font-bold uppercase tracking-widest text-silver hover:border-silver">Join the list to hear first</a>`
           : `<a href="#join" data-style="${s.name}" class="pick block rounded-sm border border-silver py-2 text-center text-[11px] font-bold uppercase tracking-widest text-white hover:bg-white hover:text-ink">Reserve this set</a>`}
       </div>
