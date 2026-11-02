@@ -109,15 +109,18 @@
           <div class="rounded-sm border border-white/70 bg-ink p-3">
             <p class="text-[11px] font-semibold uppercase tracking-[.2em] text-white">First 50 pre-orders</p>
             <p class="mt-1"><span class="font-tac text-3xl font-bold text-white" data-price="founder"></span> <span class="text-sm text-silver/70" data-off="founder"></span></p>
+            <p class="mt-1 text-xs text-white" data-split="founder"></p>
             <p class="mt-1 text-xs text-silver/80" data-spots>Founders' price plus the Founders' Kit.</p>
           </div>
           <div class="rounded-sm border border-edge bg-ink p-3">
             <p class="text-[11px] font-semibold uppercase tracking-[.2em] text-silver">Pre-orders after 50</p>
             <p class="mt-1"><span class="font-tac text-3xl font-bold text-white" data-price="preorder"></span> <span class="text-sm text-silver/70" data-off="preorder"></span></p>
+            <p class="mt-1 text-xs text-white" data-split="preorder"></p>
             <p class="mt-1 text-xs text-silver/60">Until Drop 01 launches.</p>
           </div>
         </div>
-        <p data-preorder class="mt-3 text-xs text-silver/70">Good on any Drop 01 set: Short-Sleeve Athletic, Active Tucked-In or Active Long-Sleeve. Your discount comes from your place in line and is applied automatically. Once Drop 01 is out, sets are <span data-price="retail"></span>.</p>
+        <p data-preorder class="mt-3 text-sm text-white">Reserve with a <span class="font-semibold" data-price="deposit"></span> deposit. The rest is charged when your set ships.</p>
+        <p data-preorder class="mt-2 text-xs text-silver/70">Good on any Drop 01 set: Short-Sleeve Athletic, Active Tucked-In or Active Long-Sleeve. Your discount comes from your place in line and is applied automatically. Once Drop 01 is out, sets are <span data-price="retail"></span>.</p>
       </div>
 
       <form id="preorder" data-form="preorder" method="POST" class="mt-7 rounded-md border border-edge bg-panel/90 p-4 sm:p-5">
@@ -150,7 +153,7 @@
         <input type="hidden" name="rid">
         <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hidden">
         <button class="mt-3 w-full rounded-sm bg-white py-3 text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver">Reserve My Set</button>
-        <p class="mt-2 text-xs text-silver/60">No payment today. We'll email you to confirm your set before anything is charged. Not sure of your size? <a href="#size" class="underline underline-offset-2 hover:text-white">Find my size</a>.</p>
+        <p class="mt-2 text-xs text-silver/60"><span data-deposit-note></span> Not sure of your size? <a href="#size" class="underline underline-offset-2 hover:text-white">Find my size</a>.</p>
         <p class="form-msg mt-2 hidden text-sm"></p>
       </form>
     </div>
@@ -416,6 +419,9 @@
 // everyone after them 10% off. The Google Sheet script keeps the count (same numbers in google-sheet-script.gs).
 // When Drop 01 is out, set LAUNCHED = true: the pre-order prices disappear and every set shows the retail price.
 const RETAIL = 86, FOUNDERS = 50, FOUNDER_OFF = 15, PREORDER_OFF = 10, LAUNCHED = false;
+// Hector 2026-11-02: a $40 deposit holds a pre-order; the rest is charged when the set ships.
+// DEPOSIT_LINK = the Stripe Payment Link for the $40 deposit. Empty = no online payment yet: Hector emails a secure link.
+const DEPOSIT = 40, DEPOSIT_LINK = '';
 const priceAfter = off => Math.round(RETAIL * (100 - off)) / 100;
 const money = v => '$' + (Number.isInteger(v) ? v : v.toFixed(2));
 
@@ -586,7 +592,13 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
       msg.textContent = (mine.founder <= FOUNDERS
         ? `You're in: Founder #${mine.founder} of ${FOUNDERS}. Your pre-order price is ${money(mine.price)} a set (${mine.off}% off ${money(RETAIL)}), plus the Founders' Kit.`
         : `You're in: pre-order #${mine.founder}. Your pre-order price is ${money(mine.price)} a set (${mine.off}% off ${money(RETAIL)}).`)
-        + ' We\'ll email you to confirm your Drop 01 set.';
+        + ` That's ${money(DEPOSIT)} now and ${money(Math.round((mine.price - DEPOSIT) * 100) / 100)} when it ships.`;
+      depositNext(msg, mine.founder);
+      return;
+    }
+    if (form.dataset.form === 'preorder') {
+      msg.textContent = 'You\'re in.';
+      depositNext(msg, 0);
       return;
     }
     msg.textContent = {
@@ -605,8 +617,29 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
 
 // Prices in the pricing box and the Founders' Kit, from the numbers at the top of this script.
 document.querySelectorAll('[data-price]').forEach(el => {
-  el.textContent = money({ retail: RETAIL, founder: priceAfter(FOUNDER_OFF), preorder: priceAfter(PREORDER_OFF) }[el.dataset.price]);
+  el.textContent = money({ retail: RETAIL, founder: priceAfter(FOUNDER_OFF), preorder: priceAfter(PREORDER_OFF), deposit: DEPOSIT }[el.dataset.price]);
 });
+// "$40 now · $33.10 when it ships"
+const balance = off => Math.round((priceAfter(off) - DEPOSIT) * 100) / 100;
+document.querySelectorAll('[data-split]').forEach(el => {
+  el.textContent = `${money(DEPOSIT)} deposit now · ${money(balance(el.dataset.split === 'founder' ? FOUNDER_OFF : PREORDER_OFF))} when it ships`;
+});
+document.querySelectorAll('[data-deposit-note]').forEach(el => {
+  el.textContent = DEPOSIT_LINK
+    ? `After you reserve, pay the ${money(DEPOSIT)} deposit on our secure Stripe checkout. The rest is charged when your set ships.`
+    : `No payment on this page. We'll email you a secure link for the ${money(DEPOSIT)} deposit; the rest is charged when your set ships.`;
+});
+// After a pre-order: the Stripe deposit button (client_reference_id = their pre-order number, to match the payment to
+// the Sheet row), or the note that a secure link comes by email.
+function depositNext(msg, num) {
+  if (!DEPOSIT_LINK) { msg.append(` We'll email you a secure link for your ${money(DEPOSIT)} deposit.`); return; }
+  const a = document.createElement('a');
+  a.href = DEPOSIT_LINK + (num ? '?client_reference_id=NEXO-' + num : '');
+  a.target = '_blank'; a.rel = 'noopener';
+  a.className = 'mt-3 block rounded-sm bg-white py-3 text-center text-sm font-bold uppercase tracking-[.2em] text-ink hover:bg-silver';
+  a.textContent = `Pay ${money(DEPOSIT)} deposit`;
+  msg.append(' Last step: pay your deposit to hold your set.', a);
+}
 document.querySelectorAll('[data-off]').forEach(el => {
   el.innerHTML = `<span class="line-through">${money(RETAIL)}</span> · ${el.dataset.off === 'founder' ? FOUNDER_OFF : PREORDER_OFF}% off`;
 });
