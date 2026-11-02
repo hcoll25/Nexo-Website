@@ -2,10 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>NEXO Owner Dashboard</title>
 <meta name="theme-color" content="#0a0b0d">
+<link rel="manifest" href="/app/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/app/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NEXO Owner">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a0b0d' stroke='%23c9ced6' stroke-width='4'/%3E%3Ctext x='32' y='41' font-family='Arial' font-weight='700' font-size='22' fill='%23e6e9ee' text-anchor='middle'%3EN/X%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
@@ -38,6 +44,19 @@
   dl.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 14px; }
   dl.kv dt { color: #8aa0b6; }
   dl.kv dd { color: #e6e9ee; overflow-wrap: anywhere; }
+  html { -webkit-tap-highlight-color: transparent; }
+  header.top { padding-top: env(safe-area-inset-top); }
+  #tabs { padding-bottom: env(safe-area-inset-bottom); }
+  #tabs button { -webkit-user-select: none; user-select: none; }
+  #tabs button.on { color: #fff; }
+  #tabs button.on svg { stroke: #fff; }
+  /* phone: an app with a tab bar, one screen at a time */
+  @media (max-width: 767px) {
+    body { overscroll-behavior-y: none; }
+    #dash main { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+    #dash main > section:not(.on) { display: none; }
+    #dash main > section.on { margin-top: 0; }
+  }
 </style>
 </head>
 <body class="font-sans text-silver antialiased">
@@ -53,14 +72,17 @@
     <p class="mt-1 text-sm text-silver/70">Orders, payments, promo codes and visits.</p>
     <label class="mt-5 block text-sm" for="pw">Password</label>
     <input id="pw" type="password" autocomplete="current-password" class="field mt-1" required>
+    <label class="mt-3 flex items-center gap-2 text-sm"><input id="remember" type="checkbox" class="h-4 w-4 accent-[#c9ced6]"> Keep me signed in on this device (30 days)</label>
     <button class="mt-4 w-full rounded-sm bg-silver py-3 font-semibold uppercase tracking-widest text-ink hover:bg-white">Sign in</button>
     <p id="loginMsg" class="mt-3 min-h-[1.25rem] text-sm text-[#ff8f8f]" role="alert"></p>
+    <div id="iosHint" class="mt-2 hidden rounded border border-edge p-3 text-xs text-silver/80">Get it as an app: tap <b class="text-white">Share</b> <svg class="inline h-4 w-4 align-text-bottom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg> in Safari, then <b class="text-white">Add to Home Screen</b>.</div>
+    <button type="button" class="install mt-2 hidden w-full rounded-sm border border-edge py-3 text-sm font-semibold uppercase tracking-widest hover:text-white">Install the app</button>
   </form>
 </main>
 
 <!-- DASHBOARD -->
 <div id="dash" class="hidden">
-  <header class="sticky top-0 z-40 border-b border-edge bg-ink/90 backdrop-blur">
+  <header class="top sticky top-0 z-40 border-b border-edge bg-ink/90 backdrop-blur">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
       <div class="flex items-center gap-3">
         <span class="badge-nx">N/X</span>
@@ -70,23 +92,24 @@
         </div>
       </div>
       <nav class="flex flex-wrap items-center gap-1 text-xs font-semibold uppercase tracking-widest">
-        <a href="#orders" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Orders</a>
-        <a href="#inbox" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Inbox</a>
-        <a href="#traffic" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Visits</a>
-        <a href="#payments" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Payments</a>
-        <a href="#promos" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Promo codes</a>
-        <a href="#site" class="rounded px-2 py-1 hover:bg-panel hover:text-white">Website</a>
-        <button id="refresh" class="ml-2 rounded border border-edge px-3 py-1 hover:text-white">Refresh</button>
-        <button id="logout" class="rounded border border-edge px-3 py-1 hover:text-white">Sign out</button>
+        <a href="#orders" class="hidden rounded px-2 py-1 hover:bg-panel hover:text-white md:inline">Orders</a>
+        <a href="#inbox" class="hidden rounded px-2 py-1 hover:bg-panel hover:text-white md:inline">Inbox</a>
+        <a href="#traffic" class="hidden rounded px-2 py-1 hover:bg-panel hover:text-white md:inline">Visits</a>
+        <a href="#payments" class="hidden rounded px-2 py-1 hover:bg-panel hover:text-white md:inline">Payments</a>
+        <a href="#promos" class="hidden rounded px-2 py-1 hover:bg-panel hover:text-white md:inline">Promo codes</a>
+        <a href="#site" class="hidden rounded px-2 py-1 hover:bg-panel hover:text-white md:inline">Website</a>
+        <button type="button" class="install hidden rounded border border-edge px-3 py-1 hover:text-white">Install app</button>
+        <button id="refresh" aria-label="Refresh" class="ml-2 rounded border border-edge px-3 py-1 hover:text-white"><span class="hidden md:inline">Refresh</span><svg class="h-4 w-4 md:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button>
+        <button id="logout" aria-label="Sign out" class="rounded border border-edge px-3 py-1 hover:text-white"><span class="hidden md:inline">Sign out</span><svg class="h-4 w-4 md:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg></button>
       </nav>
     </div>
   </header>
 
   <main class="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:px-6">
     <p id="err" class="hidden card border-[#6b2f2f] p-3 text-sm text-[#ff8f8f]" role="alert"></p>
-    <section id="tiles" class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6"></section>
+    <section id="tiles" data-tab="home" class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6"></section>
 
-    <section id="orders">
+    <section id="orders" data-tab="orders">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Pre-orders</h2>
@@ -97,7 +120,7 @@
       <div id="orderList" class="mt-4 grid gap-3 lg:grid-cols-2"></div>
     </section>
 
-    <section id="inbox">
+    <section id="inbox" data-tab="inbox">
       <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Inbox</h2>
       <p class="text-sm text-silver/70">What people are asking for: messages, Mobile Boutique requests, color votes and the women's list.</p>
       <div class="mt-4 grid gap-6 lg:grid-cols-2">
@@ -108,7 +131,7 @@
       </div>
     </section>
 
-    <section id="traffic">
+    <section id="traffic" data-tab="visits">
       <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Visits</h2>
       <p class="text-sm text-silver/70">Real visitors only: your browsers, mine and SENTINEL's checks are not counted. Updates every minute.</p>
       <div class="mt-4 grid gap-3 lg:grid-cols-3">
@@ -134,18 +157,18 @@
       </div>
     </section>
 
-    <section id="payments">
+    <section id="payments" data-tab="money">
       <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Payments</h2>
       <p id="paySub" class="text-sm text-silver/70"></p>
       <div id="payList" class="mt-4"></div>
     </section>
 
-    <section id="promos">
+    <section id="promos" data-tab="money">
       <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Promo codes</h2>
       <div id="promoList" class="mt-4"></div>
     </section>
 
-    <section id="site" class="pb-10">
+    <section id="site" data-tab="site" class="pb-10">
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="font-tac text-3xl font-bold uppercase tracking-wide text-white">Website</h2>
@@ -164,13 +187,22 @@
           <ul id="checks" class="mt-3 space-y-2 text-sm"><li class="text-silver/60">Scroll here to run it.</li></ul>
         </div>
         <div class="card overflow-hidden p-2">
-          <div id="frameBox" class="mx-auto h-[75vh] max-w-full overflow-hidden rounded border border-edge bg-ink transition-[width]" style="width:390px">
-            <iframe id="siteFrame" title="Your website" class="h-full w-full" loading="lazy"></iframe>
+          <div id="frameBox" class="origin-top-left overflow-hidden rounded border border-edge bg-ink" style="width:390px;height:75vh">
+            <iframe id="siteFrame" title="Your website" class="h-full w-full"></iframe>
           </div>
         </div>
       </div>
     </section>
   </main>
+
+  <nav id="tabs" class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-edge bg-ink/95 backdrop-blur md:hidden" aria-label="Sections">
+    <button type="button" data-go="home" class="flex flex-col items-center gap-0.5 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wider text-steel"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#8aa0b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+    <button type="button" data-go="orders" class="flex flex-col items-center gap-0.5 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wider text-steel"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#8aa0b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Orders</button>
+    <button type="button" data-go="inbox" class="flex flex-col items-center gap-0.5 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wider text-steel"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#8aa0b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M4 13h4l2 3h4l2-3h4"/></svg>Inbox</button>
+    <button type="button" data-go="visits" class="flex flex-col items-center gap-0.5 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wider text-steel"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#8aa0b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Visits</button>
+    <button type="button" data-go="money" class="flex flex-col items-center gap-0.5 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wider text-steel"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#8aa0b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>Money</button>
+    <button type="button" data-go="site" class="flex flex-col items-center gap-0.5 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wider text-steel"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="#8aa0b6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Website</button>
+  </nav>
 </div>
 <div id="tip" class="hidden rounded border border-edge bg-ink px-2 py-1 text-xs text-white"></div>
 
@@ -182,8 +214,10 @@ const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const money = v => '$' + Number(v || 0).toFixed(2);
 const day = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 const when = d => d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-const store = { get: k => { try { return sessionStorage.getItem(k); } catch { return null; } },
-                set: (k, v) => { try { v ? sessionStorage.setItem(k, v) : sessionStorage.removeItem(k); } catch {} } };
+// sign-in token: this tab only, or (Keep me signed in) this device
+const store = { get: k => { try { return sessionStorage.getItem(k) || localStorage.getItem(k); } catch { return null; } },
+                set: (k, v, keep) => { try { sessionStorage.removeItem(k); localStorage.removeItem(k); if (v) (keep ? localStorage : sessionStorage).setItem(k, v); } catch {} } };
+const APP = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 // rows from the Sheet: [header, ...rows] -> objects keyed by header
 const rows = t => (t && t.length > 1 ? t.slice(1).map(r => Object.fromEntries(t[0].map((h, i) => [h, r[i]]))) : []).reverse();
 let data = null, timer = null;
@@ -223,10 +257,10 @@ $('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   $('loginMsg').textContent = 'Signing in...';
   try {
-    const r = await call({ password: $('pw').value });
+    const r = await call({ password: $('pw').value, remember: $('remember').checked ? '1' : '' });
     if (!r.ok) return showLogin(r.error);
     $('pw').value = '';
-    store.set('nexoAdmin', r.token);
+    store.set('nexoAdmin', r.token, $('remember').checked);
     try { localStorage.setItem('nexoMe', '1'); } catch {} // this browser is the owner's: never count it as a visit
     data = r;
     $('login').classList.add('hidden');
@@ -243,6 +277,8 @@ function startTimer() { clearInterval(timer); timer = setInterval(() => { if (!d
 function render() {
   $('updated').textContent = 'Updated ' + when(new Date(data.now));
   renderTiles(); renderOrders(); renderInbox(); renderVisits(); renderPayments(); renderPromos();
+  fitFrame();
+  if (!siteShown && $('site').classList.contains('on') && matchMedia('(max-width: 767px)').matches) showSite();
 }
 
 function visitList() { return data.visits.map(v => ({ t: new Date(v[0]), page: v[1], from: v[2] || 'direct', device: v[3], back: v[4] })).filter(v => !isNaN(v.t)); }
@@ -395,10 +431,21 @@ let siteShown = false;
 function showSite() {
   siteShown = true;
   $('checks').innerHTML = '<li class="text-silver/60">Checking...</li>';
+  fitFrame();
   $('siteFrame').src = SITE + '?view=' + Date.now(); // a fresh copy, not the browser's saved one
 }
 $('siteReload').onclick = showSite;
-document.querySelectorAll('.size').forEach(b => b.onclick = () => { $('frameBox').style.width = b.dataset.width + 'px'; });
+// the page is shown at the real screen width, shrunk to fit when the dashboard is narrower (like a zoomed-out phone)
+let frameWidth = 390;
+function fitFrame() {
+  const box = $('frameBox'), wrap = box.parentElement, avail = wrap.clientWidth - 16, tall = innerHeight * 0.75;
+  if (avail <= 0) return;
+  const k = Math.min(1, avail / frameWidth);
+  Object.assign(box.style, { width: frameWidth + 'px', height: tall / k + 'px', transform: `scale(${k})`, marginLeft: Math.max(0, (avail - frameWidth * k) / 2) + 'px' });
+  wrap.style.height = tall + 16 + 'px';
+}
+document.querySelectorAll('.size').forEach(b => b.onclick = () => { frameWidth = Number(b.dataset.width); fitFrame(); });
+addEventListener('resize', fitFrame);
 new IntersectionObserver(e => { if (e[0].isIntersecting && !siteShown) showSite(); }).observe($('site'));
 $('siteFrame').addEventListener('load', async () => {
   const w = $('siteFrame').contentWindow, doc = $('siteFrame').contentDocument;
@@ -451,6 +498,30 @@ function demo(p) {
       payments: [{ time: now / 1000 - 3600, ref: 'NEXO-3', name: 'Tyler Brooks', email: 'tyler@example.com', phone: '', amount: 40, status: 'paid', refunded: 0, discount: 0 },
                  { time: now / 1000 - 90000, ref: 'NEXO-1', name: 'Marcus Hill', email: 'marcus.rn@example.com', phone: '', amount: 40, status: 'paid', refunded: 0, discount: 0 }] } };
 }
+
+// the app: tab bar, install button, its own files kept for offline, fresh numbers when reopened
+function setTab(t) {
+  document.querySelectorAll('#dash main > section').forEach(s => s.classList.toggle('on', s.dataset.tab === t));
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.go === t));
+  try { localStorage.setItem('nexoTab', t); } catch {}
+  scrollTo(0, 0);
+  if (t === 'site' && !siteShown && data && matchMedia('(max-width: 767px)').matches) showSite();
+}
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => setTab(b.dataset.go));
+setTab((() => { try { return localStorage.getItem('nexoTab'); } catch { return null; } })() || 'home');
+$('remember').checked = APP;
+let installPrompt = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installPrompt = e; document.querySelectorAll('.install').forEach(b => b.classList.remove('hidden')); });
+document.querySelectorAll('.install').forEach(b => b.onclick = async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  document.querySelectorAll('.install').forEach(x => x.classList.add('hidden'));
+});
+if (/iPhone|iPad|iPod/.test(navigator.userAgent) && !APP) $('iosHint').classList.remove('hidden');
+if ('serviceWorker' in navigator && !DEMO) navigator.serviceWorker.register('/admin-sw.js', { scope: '/admin' }).catch(() => {});
+document.addEventListener('visibilitychange', () => { if (!document.hidden && data) load(); });
 
 if (store.get('nexoAdmin')) { load(); startTimer(); } else showLogin();
 </script>
