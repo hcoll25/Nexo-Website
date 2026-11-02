@@ -421,7 +421,7 @@
 const RETAIL = 86, FOUNDERS = 50, FOUNDER_OFF = 15, PREORDER_OFF = 10, LAUNCHED = false;
 // Hector 2026-11-02: a $40 deposit holds a pre-order; the rest is charged when the set ships.
 // DEPOSIT_LINK = the Stripe Payment Link for the $40 deposit. Empty = no online payment yet: Hector emails a secure link.
-const DEPOSIT = 40, DEPOSIT_LINK = '';
+const DEPOSIT = 40, DEPOSIT_LINK = 'https://buy.stripe.com/9B6bJ39XT2qJeAl42K9Zm00';
 const priceAfter = off => Math.round(RETAIL * (100 - off)) / 100;
 const money = v => '$' + (Number.isInteger(v) ? v : v.toFixed(2));
 
