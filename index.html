@@ -158,7 +158,8 @@
             <p class="mt-1 text-xs text-silver/60">Until Drop 01 launches.</p>
           </div>
         </div>
-        <p data-preorder class="mt-3 text-sm text-white">Reserve with a <span class="font-semibold" data-price="deposit"></span> deposit. The rest is charged when your set ships.</p>
+        <p data-preorder class="mt-3 text-sm text-white">Reserve with a <span class="font-semibold" data-price="deposit"></span> deposit. The rest is charged when your order ships.</p>
+        <p class="mt-2 text-sm text-white">Shipping: <span class="font-semibold" data-price="shipping"></span> on one set, <span class="font-semibold text-bronze-light">free on 2 or more sets</span>.</p>
         <p data-preorder class="mt-2 text-xs text-silver/70">Good on either Drop 01 set: the Short-Sleeve Athletic (untucked) or the Active Tucked-In. Your discount comes from your place in line and is applied automatically. Once Drop 01 is out, sets are <span data-price="retail"></span>.</p>
       </div>
 
@@ -182,7 +183,11 @@
           <select required name="jogger_size" class="field">
             <option value="">Jogger size</option><option>S</option><option>M</option><option>L</option><option>XL</option>
           </select>
+          <select required name="sets" class="field sm:col-span-2" aria-label="How many sets">
+            <option value="1">1 set</option><option value="2">2 sets · free shipping</option><option value="3">3 sets · free shipping</option><option value="4">4 sets · free shipping</option>
+          </select>
         </div>
+        <p data-order-total class="mt-2 text-sm text-white"></p>
         <p class="mt-2 text-xs text-silver/60">Drop 01 launches in Midnight Navy and Matte Black. More colors are coming soon.</p>
         <input name="color_wish" list="nextColors" maxlength="60" placeholder="Color you'd like to see next (optional: pick or type)" class="field mt-3">
         <input type="tel" name="phone" placeholder="Mobile for SMS drop alerts (optional)" autocomplete="tel" class="field mt-3">
@@ -459,6 +464,9 @@ const RETAIL = 69.99, FOUNDERS = 50, FOUNDER_OFF = 15, PREORDER_OFF = 10, LAUNCH
 // Hector 2026-11-02: a $40 deposit holds a pre-order; the rest is charged when the set ships.
 // DEPOSIT_LINK = the Stripe Payment Link for the $40 deposit. Empty = no online payment yet: Hector emails a secure link.
 const DEPOSIT = 40, DEPOSIT_LINK = 'https://buy.stripe.com/9B6bJ39XT2qJeAl42K9Zm00';
+// Shipping (Hector 2026-11-08): $9 on one set, free on 2 or more. One $40 deposit holds the whole order.
+const SHIPPING = 9, FREE_SHIP_SETS = 2;
+const shipFor = n => n >= FREE_SHIP_SETS ? 0 : SHIPPING;
 const priceAfter = off => Math.round(RETAIL * (100 - off)) / 100;
 const money = v => '$' + (Number.isInteger(v) ? v : v.toFixed(2));
 
@@ -622,18 +630,21 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
   }
   btn.disabled = true;
   const rid = form.elements.rid ? (form.elements.rid.value = Math.random().toString(36).slice(2) + Date.now().toString(36)) : '';
+  const sets = form.elements.sets ? Number(form.elements.sets.value) || 1 : 1;
   try {
     // Apps Script answers from another domain, so the reply can't be read (no-cors); a network error still throws.
     await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) });
     form.reset();
+    showTotal();
     msg.className = 'form-msg mt-2 text-sm text-emerald-300';
     // a pre-order then asks the Sheet (by its random request id, nothing personal) which number and price it got
     const mine = rid && await sheetGet({ rid }).then(r => (showSpots(r), r.mine)).catch(() => null);
     if (mine) {
+      const o = order(mine.price, mine.sets || sets);
       msg.textContent = (mine.founder <= FOUNDERS
         ? `You're in: Founder #${mine.founder} of ${FOUNDERS}. Your pre-order price is ${money(mine.price)} a set (${mine.off}% off ${money(RETAIL)}), plus the Founders' Kit.`
         : `You're in: pre-order #${mine.founder}. Your pre-order price is ${money(mine.price)} a set (${mine.off}% off ${money(RETAIL)}).`)
-        + ` That's ${money(DEPOSIT)} now and ${money(Math.round((mine.price - DEPOSIT) * 100) / 100)} when it ships.`;
+        + ` ${o.text} That's ${money(DEPOSIT)} now and ${money(o.due)} when it ships.`;
       depositNext(msg, mine.founder);
       return;
     }
@@ -658,17 +669,17 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
 
 // Prices in the pricing box and the Founders' Kit, from the numbers at the top of this script.
 document.querySelectorAll('[data-price]').forEach(el => {
-  el.textContent = money({ retail: RETAIL, founder: priceAfter(FOUNDER_OFF), preorder: priceAfter(PREORDER_OFF), deposit: DEPOSIT }[el.dataset.price]);
+  el.textContent = money({ retail: RETAIL, founder: priceAfter(FOUNDER_OFF), preorder: priceAfter(PREORDER_OFF), deposit: DEPOSIT, shipping: SHIPPING }[el.dataset.price]);
 });
 // "$40 now · $19.49 when it ships"
 const balance = off => Math.round((priceAfter(off) - DEPOSIT) * 100) / 100;
 document.querySelectorAll('[data-split]').forEach(el => {
-  el.textContent = `${money(DEPOSIT)} deposit now · ${money(balance(el.dataset.split === 'founder' ? FOUNDER_OFF : PREORDER_OFF))} when it ships`;
+  el.textContent = `${money(DEPOSIT)} deposit now · ${money(balance(el.dataset.split === 'founder' ? FOUNDER_OFF : PREORDER_OFF))} + shipping when it ships`;
 });
 document.querySelectorAll('[data-deposit-note]').forEach(el => {
   el.textContent = DEPOSIT_LINK
-    ? `After you reserve, pay the ${money(DEPOSIT)} deposit on our secure Stripe checkout. The rest is charged when your set ships.`
-    : `No payment on this page. We'll email you a secure link for the ${money(DEPOSIT)} deposit; the rest is charged when your set ships.`;
+    ? `After you reserve, pay the ${money(DEPOSIT)} deposit on our secure Stripe checkout. The rest is charged when your order ships.`
+    : `No payment on this page. We'll email you a secure link for the ${money(DEPOSIT)} deposit; the rest is charged when your order ships.`;
 });
 // After a pre-order: the Stripe deposit button (client_reference_id = their pre-order number, to match the payment to
 // the Sheet row), or the note that a secure link comes by email.
@@ -681,6 +692,21 @@ function depositNext(msg, num) {
   a.textContent = `Pay ${money(DEPOSIT)} deposit`;
   msg.append(' Last step: pay your deposit to hold your set.', a);
 }
+// An order: sets x price + shipping ($9 on one set, free on 2+); the $40 deposit comes off the total.
+function order(each, n) {
+  const ship = shipFor(n), total = Math.round((each * n + ship) * 100) / 100;
+  return { total, due: Math.round((total - DEPOSIT) * 100) / 100,
+           text: `${n} set${n > 1 ? 's' : ''} × ${money(each)} + ${ship ? money(ship) + ' shipping' : 'free shipping'} = ${money(total)}.` };
+}
+let foundersOpen = true; // switched off when the Sheet says all founder spots are taken
+function showTotal() {
+  const el = document.querySelector('[data-order-total]'), f = document.getElementById('preorder');
+  if (!el || !f || LAUNCHED) return;
+  const n = Number(f.elements.sets.value) || 1, o = order(priceAfter(foundersOpen ? FOUNDER_OFF : PREORDER_OFF), n);
+  el.textContent = `${o.text} ${money(DEPOSIT)} deposit now, ${money(o.due)} when it ships.` + (n === 1 ? ' Add a second set and shipping is free.' : '');
+}
+document.getElementById('preorder').elements.sets.addEventListener('change', showTotal);
+showTotal();
 document.querySelectorAll('[data-off]').forEach(el => {
   el.innerHTML = `<span class="line-through">${money(RETAIL)}</span> · ${el.dataset.off === 'founder' ? FOUNDER_OFF : PREORDER_OFF}% off`;
 });
@@ -705,6 +731,7 @@ function sheetGet(params) {
 function showSpots(r) {
   const spots = document.querySelector('[data-spots]');
   if (!spots || typeof r.left !== 'number') return;
+  foundersOpen = r.left > 0; showTotal();
   spots.innerHTML = r.left > 0
     ? `<span class="font-semibold text-white">${r.left} of ${FOUNDERS}</span> founder spots left, plus the Founders' Kit.`
     : `All ${FOUNDERS} founder spots are taken. Pre-orders still get ${PREORDER_OFF}% off.`;
