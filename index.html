@@ -750,6 +750,8 @@ if (matchMedia('(prefers-reduced-motion: reduce)').matches) { film.removeAttribu
 // The owner's own browsers are never counted: open nexoscrubs.com/?me=1 once on each one (?me=0 undoes it).
 (() => {
   if (location.hostname !== 'nexoscrubs.com' || navigator.webdriver || window.top !== window) return; // the owner dashboard's preview never counts
+  // Search engines and site checkers run the page like a browser; skip any that name themselves.
+  if (/bot|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|facebookexternalhit|bingpreview|google-inspectiontool|gtmetrix|pingdom|uptime/i.test(navigator.userAgent)) return;
   const q = new URLSearchParams(location.search);
   try {
     if (q.has('me')) {
