@@ -452,10 +452,10 @@
 </footer>
 
 <script>
-// Pricing (Hector 2026-11-02): $86 a set retail. Pre-orders: the first 50 people get 15% off any Drop 01 set,
+// Pricing (Hector 2026-11-08, was $86): $69.99 a set retail. Pre-orders: the first 50 people get 15% off any Drop 01 set,
 // everyone after them 10% off. The Google Sheet script keeps the count (same numbers in google-sheet-script.gs).
 // When Drop 01 is out, set LAUNCHED = true: the pre-order prices disappear and every set shows the retail price.
-const RETAIL = 86, FOUNDERS = 50, FOUNDER_OFF = 15, PREORDER_OFF = 10, LAUNCHED = false;
+const RETAIL = 69.99, FOUNDERS = 50, FOUNDER_OFF = 15, PREORDER_OFF = 10, LAUNCHED = false;
 // Hector 2026-11-02: a $40 deposit holds a pre-order; the rest is charged when the set ships.
 // DEPOSIT_LINK = the Stripe Payment Link for the $40 deposit. Empty = no online payment yet: Hector emails a secure link.
 const DEPOSIT = 40, DEPOSIT_LINK = 'https://buy.stripe.com/9B6bJ39XT2qJeAl42K9Zm00';
@@ -660,7 +660,7 @@ document.querySelectorAll('form[data-form]').forEach(form => form.addEventListen
 document.querySelectorAll('[data-price]').forEach(el => {
   el.textContent = money({ retail: RETAIL, founder: priceAfter(FOUNDER_OFF), preorder: priceAfter(PREORDER_OFF), deposit: DEPOSIT }[el.dataset.price]);
 });
-// "$40 now · $33.10 when it ships"
+// "$40 now · $19.49 when it ships"
 const balance = off => Math.round((priceAfter(off) - DEPOSIT) * 100) / 100;
 document.querySelectorAll('[data-split]').forEach(el => {
   el.textContent = `${money(DEPOSIT)} deposit now · ${money(balance(el.dataset.split === 'founder' ? FOUNDER_OFF : PREORDER_OFF))} when it ships`;

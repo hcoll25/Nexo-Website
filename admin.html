@@ -485,11 +485,11 @@ function demo(p) {
   for (let i = 0; i < 160; i++) visits.push([new Date(now - Math.random() * 13 * 864e5 - (i < 3 ? 0 : 1800e3)).toISOString(), '/', ['direct', 'instagram', 'tiktok', 'facebook'][i % 7 % 4], i % 3 ? 'phone' : 'computer', i % 4 ? 'no' : 'yes']);
   visits.sort((a, b) => a[0] < b[0] ? -1 : 1);
   const head = ['Time', 'Founder #', 'email', 'hospital', 'style', 'color', 'top_size', 'jogger_size', 'phone', 'color_wish', 'womens', 'Pre-order price', 'Deposit', 'Due at shipping'];
-  return { ok: true, token: 'demo', now: new Date().toISOString(), retail: 86, founders: 50, deposit: 40, left: 47,
+  return { ok: true, token: 'demo', now: new Date().toISOString(), retail: 69.99, founders: 50, deposit: 40, left: 47,
     forms: {
-      'Pre-orders': [head, ['10/31/2026 9:12:04', 1, 'marcus.rn@example.com', 'Froedtert Hospital', 'Active Tucked-In', 'Navy', 'L', 'L', '414-555-0101', 'Olive', '', '$73.10 (15% off)', '$40.00', '$33.10'],
-                           ['11/1/2026 18:40:11', 2, 'dj@example.com', "Children's Wisconsin", 'Multi-Pocket Active', 'Black', 'M', 'M', '', '', 'yes', '$73.10 (15% off)', '$40.00', '$33.10'],
-                           ['11/2/2026 10:02:55', 3, 'tyler@example.com', 'Aurora St. Luke\'s', 'Active Long-Sleeve', 'Navy', 'XL', 'L', '414-555-0199', '', '', '$73.10 (15% off)', '$40.00', '$33.10']],
+      'Pre-orders': [head, ['10/31/2026 9:12:04', 1, 'marcus.rn@example.com', 'Froedtert Hospital', 'Active Tucked-In', 'Navy', 'L', 'L', '414-555-0101', 'Olive', '', '$59.49 (15% off)', '$40.00', '$19.49'],
+                           ['11/1/2026 18:40:11', 2, 'dj@example.com', "Children's Wisconsin", 'Multi-Pocket Active', 'Black', 'M', 'M', '', '', 'yes', '$59.49 (15% off)', '$40.00', '$19.49'],
+                           ['11/2/2026 10:02:55', 3, 'tyler@example.com', 'Aurora St. Luke\'s', 'Active Long-Sleeve', 'Navy', 'XL', 'L', '414-555-0199', '', '', '$59.49 (15% off)', '$40.00', '$19.49']],
       Messages: [['Time', 'name', 'email', 'message'], ['11/1/2026 12:30:00', 'Andre', 'andre@example.com', 'Do the joggers come in tall? I\'m 6\'4" and most scrubs are too short.\nAlso, do you ship to Chicago?']],
       'Boutique requests': [['Time', 'name', 'email', 'hospital', 'city_state', 'shift'], ['11/2/2026 8:15:00', 'Kim', 'kim@example.com', 'Ascension Columbia St. Mary\'s', 'Milwaukee, WI', 'Day shift, 7 AM']],
       'Color votes': [['Time', 'email', 'color_wish', 'womens'], ['', 'a@example.com', 'Olive', 'yes'], ['', 'b@example.com', 'Olive', ''], ['', 'c@example.com', 'Burgundy', '']],
