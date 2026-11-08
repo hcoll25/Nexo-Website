@@ -26,6 +26,13 @@
   }
 </script>
 <style>
+  /* Men's / Women's tabs under the header: anchors land below the whole sticky header */
+  html { scroll-padding-top: 6.75rem; }
+  .gtab { position: relative; display: flex; flex: 1 1 0; align-items: center; justify-content: center; gap: .5rem; padding: .7rem 1rem; font-size: .75rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(242,238,230,.6); transition: color .2s; }
+  @media (min-width: 640px) { .gtab { flex: 0 0 auto; padding-left: 1.75rem; padding-right: 1.75rem; } }
+  .gtab:hover, .gtab.on { color: #fff; }
+  .gtab::after { content: ""; position: absolute; left: 1rem; right: 1rem; bottom: 0; height: 2px; background: #B8925A; transform: scaleX(0); transition: transform .25s; }
+  .gtab.on::after { transform: scaleX(1); }
   body { background: #0B1422; }
   .font-tac { font-stretch: 85%; }
   /* premium, warm: mixed-case display headings, bronze eyebrows, soft warm light, quiet depth */
@@ -64,8 +71,6 @@
       <span class="font-tac text-2xl font-bold tracking-[.25em] text-white">NEXO</span>
     </a>
     <div class="hidden items-center gap-7 whitespace-nowrap text-sm font-medium uppercase tracking-widest xl:flex">
-      <a href="#collection" class="transition-colors hover:text-bronze-light">Collection</a>
-      <a href="#women" class="transition-colors hover:text-bronze-light">Women's</a>
       <a href="#specs" class="transition-colors hover:text-bronze-light">Tech Specs</a>
       <a href="#size" class="transition-colors hover:text-bronze-light">Find My Size</a>
       <a href="#box" class="transition-colors hover:text-bronze-light">What You Get</a>
@@ -89,6 +94,13 @@
       </button>
     </div>
   </nav>
+  <!-- Men's / Women's tabs (Hector 2026-11-08): one tap to each line; the one in view is underlined -->
+  <div class="border-t border-white/[.06]">
+    <div class="mx-auto flex max-w-7xl sm:px-2" role="navigation" aria-label="Men's and women's">
+      <a href="#collection" data-gtab="collection" class="gtab on">Men's</a>
+      <a href="#women" data-gtab="women" class="gtab">Women's <span class="whitespace-nowrap rounded-sm border border-bronze/60 px-1.5 py-0.5 text-[9px] tracking-[.15em] text-bronze-light">Sneak peek</span></a>
+    </div>
+  </div>
   <div id="menu" class="hidden border-t border-edge px-4 pb-4 text-sm uppercase tracking-widest xl:hidden">
     <a href="#collection" class="block py-2">Collection</a>
     <a href="#women" class="block py-2">Women's sneak peek</a>
@@ -108,7 +120,7 @@
 <main id="top">
 
 <!-- HERO: the launch film, full width, with the headline over it (still picture for reduced motion) -->
-<section aria-label="NEXO" class="relative isolate flex min-h-[calc(100svh-4rem)] items-end overflow-hidden bg-ink lg:items-center">
+<section aria-label="NEXO" class="relative isolate flex min-h-[calc(100svh-6.75rem)] items-end overflow-hidden bg-ink lg:items-center">
   <video id="brandFilm" class="absolute inset-0 -z-10 h-full w-full object-cover object-[30%_50%]" src="assets/brand-banner.mp4" poster="assets/brand-banner.jpg"
          autoplay muted loop playsinline preload="metadata" disablepictureinpicture aria-hidden="true"></video>
   <div class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/55 to-ink/10 lg:bg-gradient-to-l lg:from-ink/95 lg:via-ink/55 lg:to-transparent"></div>
@@ -132,7 +144,7 @@
 
 <div class="hairline" aria-hidden="true"></div>
 <!-- PRE-ORDER: pricing + reserve form -->
-<section id="join" class="grain relative overflow-hidden scroll-mt-16">
+<section id="join" class="grain relative overflow-hidden">
   <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_25%,rgba(184,146,90,.18),transparent_60%),radial-gradient(ellipse_at_10%_90%,rgba(184,146,90,.07),transparent_55%)]"></div>
   <div class="relative mx-auto grid max-w-7xl items-start gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:py-24">
     <div>
@@ -264,7 +276,7 @@
 
 <div class="hairline" aria-hidden="true"></div>
 <!-- WOMEN'S SNEAK PEEK (Hector 2026-11-08: a concept, made only if women want it) -->
-<section id="women" class="grain relative scroll-mt-16">
+<section id="women" class="grain relative">
   <div class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:py-32">
     <p class="eyebrow">Sneak peek · Women's</p>
     <h2 class="display mt-4 text-4xl text-white sm:text-5xl lg:text-[3.4rem] leading-[1.05]">The NEXO women's fit</h2>
@@ -648,6 +660,27 @@ finder.addEventListener('submit', e => {
 const menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('menu');
 menuBtn.addEventListener('click', () => { const open = menu.classList.toggle('hidden') === false; menuBtn.setAttribute('aria-expanded', open); });
 menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.add('hidden')));
+
+// Men's / Women's tabs: underline Women's while the women's sneak peek fills the screen, Men's otherwise
+(() => {
+  const tabs = document.querySelectorAll('[data-gtab]'), women = document.getElementById('women');
+  const mark = () => {
+    const r = women.getBoundingClientRect(), on = r.top < innerHeight * 0.45 && r.bottom > innerHeight * 0.45 ? 'women' : 'collection';
+    tabs.forEach(t => t.classList.toggle('on', t.dataset.gtab === on));
+  };
+  addEventListener('scroll', mark, { passive: true }); addEventListener('resize', mark); mark();
+  // Pictures above a section load as you scroll and push it down, so a tap loads them first and lands again once they're in.
+  tabs.forEach(t => t.addEventListener('click', e => {
+    e.preventDefault();
+    const el = document.getElementById(t.getAttribute('href').slice(1));
+    const waiting = [...document.images].filter(i => !i.complete && (i.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING));
+    waiting.forEach(i => { i.loading = 'eager'; });
+    el.scrollIntoView();
+    history.replaceState(null, '', '#' + el.id);
+    if (waiting.length) Promise.all(waiting.map(i => new Promise(r => { i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true }); })))
+      .then(() => el.scrollIntoView());
+  }));
+})();
 
 // Both forms go to the NEXO Google Sheet (google-sheet-script.gs, deployed as a web app).
 // Paste the web app URL here; until then nothing is sent anywhere.
